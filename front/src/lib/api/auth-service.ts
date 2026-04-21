@@ -4,6 +4,7 @@
  * 注意：登录接口的响应格式为 { status, message, data }，
  * 不走通用 http 封装（避免 code 字段校验冲突），直接使用 fetch。
  */
+import { http } from "@/lib/http";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "/api";
 
@@ -35,7 +36,7 @@ export interface LoginResponse {
  * POST /api/login/
  */
 export async function loginApi(payload: LoginPayload): Promise<LoginResponse> {
-  const res = await fetch(`${API_BASE_URL}/login/`, {
+  const res = await fetch(`${API_BASE_URL}/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -53,4 +54,12 @@ export async function loginApi(payload: LoginPayload): Promise<LoginResponse> {
   }
 
   return data;
+}
+
+/**
+ * 调用登出接口
+ * POST /api/logout/
+ */
+export async function logoutApi() {
+  await http.post("/logout");
 }

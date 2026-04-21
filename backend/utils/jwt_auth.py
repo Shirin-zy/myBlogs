@@ -57,8 +57,7 @@ def get_auth_user(request) -> dict:
     # 从 Cookie 中获取 blog-session
     auth_cookie = request.COOKIES.get("blog-session")
 
-    token = auth_cookie
-    return verify_token(token)
+    return verify_token(auth_cookie)
 
 
 def jwt_auth_required(view_func):

@@ -4,7 +4,7 @@ from utils.jwt_auth import generate_token
 
 
 @api_view(["POST"])
-def test_login(request):
+def login(request):
     """
     POST 方法测试登录接口（不论账号密码，一律返回成功并生成鉴权 Token）
     """
@@ -21,7 +21,7 @@ def test_login(request):
     # 生成 Token，默认过期时间为 24 小时
     token = generate_token(user_payload)
     # 按照用户要求，cookie 中的内容为原本的 Authorization 内容，即包含 "Bearer " 前缀
-    cookie_value = f"Bearer {token}"
+    cookie_value = token
 
     response = Response(
         {

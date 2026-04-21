@@ -1,3 +1,4 @@
-from .test_login import test_login
+from .login import login
+from .logout import logout
 
-__all__ = ['test_login']
+__all__ = ["login", "logout"]

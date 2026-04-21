@@ -29,8 +29,8 @@ const Article = () => {
 
     const getArticles = async () => {
         try {
-            const data = await http.get<ArticleProps[]>('/blogs/articleList/')
-            setArticles(data)
+            const data = await http.get<ArticleProps[]>('/blogs/articleList')
+            setArticles(data?.list || [])
         } catch (error) {
             console.error('获取文章列表失败:', error)
         }

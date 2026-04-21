@@ -2,16 +2,9 @@
 
 import { createStore, type StoreApi, useStore } from "zustand";
 import { createContext, useContext, useRef, type ReactNode } from "react";
-import Cookies from "js-cookie";
-import type { AdminUser } from "@/types";
-import { loginApi } from "@/lib/api/auth-service";
+import { loginApi, logoutApi } from "@/lib/api/auth-service";
 
 /** Token Cookie 名称（与 middleware 保持一致） */
-const SESSION_COOKIE = "blog-session";
-
-/** Token 有效期（天） */
-const TOKEN_EXPIRES_DAYS = 7;
-
 interface AppStoreState {
   user: string | null;
   isLogin: boolean;
@@ -37,23 +30,20 @@ const createAppStore = (): StoreApi<AppStore> =>
     login: async (username: string, password: string) => {
       try {
         const res = await loginApi({ username, password });
-        const { token, user_info } = res.data;
-
-        // 将 token 存入 Cookie，供 middleware 路由守卫读取
-        Cookies.set(SESSION_COOKIE, token, {
-          expires: TOKEN_EXPIRES_DAYS,
-          sameSite: "strict",
-        });
+        const { user_info } = res.data;
         set({ user: user_info.user_id, isLogin: true });
       } catch (error) {
         set({ isLogin: false });
         throw error;
       }
     },
-    logout: () => {
-      // 清除 Cookie 和本地状态
-      Cookies.remove(SESSION_COOKIE);
-      set({ user: null, isLogin: false });
+    logout: async () => {
+      try {
+        await logoutApi();
+        set({ user: null, isLogin: false });
+      } catch (error) {
+        throw error;
+      }
     },
   }));
 
