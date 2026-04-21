@@ -1,0 +1,524 @@
+// ============================================================
+// Login Page – Less CSS Module
+// ============================================================
+
+// ── Variables ────────────────────────────────────────────────
+@color-bg-dark:      #1a1a2e;
+@color-bg-white:     #fff;
+@color-primary:      #5b21b6;
+@color-dark:         #2d2d2d;
+@color-border:       #e0e0e0;
+@color-text-muted:   #888;
+@color-text-dark:    #333;
+@color-text-label:   #555;
+@color-error:        #dc2626;
+@color-error-bg:     rgba(220, 38, 38, 0.08);
+@color-error-border: rgba(220, 38, 38, 0.2);
+
+// Left panel gradient & blur colors
+@panel-grad-start:   #d4d0dc;
+@panel-grad-mid:     #c8c4d0;
+@panel-grad-end:     #bbb7c5;
+@panel-blob-1:       rgba(180, 170, 200, 0.25);
+@panel-blob-2:       rgba(200, 195, 210, 0.2);
+
+// Character colors
+@char-purple:        #6c3ff5;
+@char-black:         #2d2d2d;
+@char-orange:        #ff9b6b;
+@char-yellow:        #e8d754;
+
+// Sizing / radius
+@btn-height:         50px;
+@btn-radius:         25px;
+@input-height:       48px;
+
+// ── Mixins ───────────────────────────────────────────────────
+.transition(@props: all, @dur: 0.3s, @ease: ease) {
+  transition: @props @dur @ease;
+}
+
+.absolute-fill() {
+  position: absolute;
+  inset: 0;
+}
+
+.flex-center() {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// ── Keyframes ────────────────────────────────────────────────
+@keyframes shakeHead {
+  0%, 100% { translate: 0 0; }
+  10%       { translate: -9px 0; }
+  20%       { translate:  7px 0; }
+  30%       { translate: -6px 0; }
+  40%       { translate:  5px 0; }
+  50%       { translate: -4px 0; }
+  60%       { translate:  3px 0; }
+  70%       { translate: -2px 0; }
+  80%       { translate:  1px 0; }
+  90%       { translate: -0.5px 0; }
+}
+
+// ── Layout ───────────────────────────────────────────────────
+.loginPage {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 100vh;
+}
+
+// ── Left Panel ───────────────────────────────────────────────
+.leftPanel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: linear-gradient(135deg, @panel-grad-start 0%, @panel-grad-mid 50%, @panel-grad-end 100%);
+  padding: 40px 48px;
+  overflow: hidden;
+
+  // Decorative blobs
+  &::after {
+    content: "";
+    position: absolute;
+    top: 20%;
+    right: 15%;
+    width: 260px;
+    height: 260px;
+    background: @panel-blob-1;
+    border-radius: 50%;
+    filter: blur(80px);
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    bottom: 15%;
+    left: 10%;
+    width: 350px;
+    height: 350px;
+    background: @panel-blob-2;
+    border-radius: 50%;
+    filter: blur(100px);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    z-index: 10;
+    position: relative;
+
+    svg {
+      width: 28px;
+      height: 28px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      padding: 4px;
+      border-radius: 6px;
+    }
+  }
+
+  .footerLinks {
+    display: flex;
+    gap: 28px;
+    font-size: 13px;
+    color: rgba(80, 70, 90, 0.7);
+    z-index: 10;
+    position: relative;
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      .transition(color, 0.2s);
+
+      &:hover {
+        color: @color-text-dark;
+      }
+    }
+  }
+}
+
+// ── Characters Scene ─────────────────────────────────────────
+.charactersWrapper {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  height: 420px;
+}
+
+.charactersScene {
+  position: relative;
+  width: 480px;
+  height: 360px;
+  overflow: visible;
+}
+
+.character {
+  position: absolute;
+  bottom: 0;
+  .transition(all, 0.7s, ease-in-out);
+  transform-origin: bottom center;
+}
+
+.charPurple {
+  left: 60px;
+  width: 170px;
+  height: 370px;
+  background: @char-purple;
+  border-radius: 10px 10px 0 0;
+  z-index: 1;
+}
+
+.charBlack {
+  left: 220px;
+  width: 115px;
+  height: 290px;
+  background: @char-black;
+  border-radius: 8px 8px 0 0;
+  z-index: 2;
+}
+
+.charOrange {
+  left: 0;
+  width: 230px;
+  height: 190px;
+  background: @char-orange;
+  border-radius: 115px 115px 0 0;
+  z-index: 3;
+}
+
+.charYellow {
+  left: 290px;
+  width: 135px;
+  height: 215px;
+  background: @char-yellow;
+  border-radius: 68px 68px 0 0;
+  z-index: 4;
+}
+
+// ── Eyes & Mouth ─────────────────────────────────────────────
+.eyes {
+  position: absolute;
+  display: flex;
+  .transition(all, 0.7s, ease-in-out);
+
+  &.shakeHead {
+    animation: shakeHead 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  }
+}
+
+.eyeball {
+  border-radius: 50%;
+  background: white;
+  .flex-center();
+  transition: height 0.15s ease;
+  overflow: hidden;
+}
+
+.pupil {
+  border-radius: 50%;
+  background: @color-dark;
+  transition: transform 0.1s ease-out;
+}
+
+.barePupil {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: @color-dark;
+  .transition(transform, 0.7s, ease-in-out);
+}
+
+.yellowMouth {
+  position: absolute;
+  width: 50px;
+  height: 4px;
+  background: @color-dark;
+  border-radius: 2px;
+  .transition(all, 0.7s, ease-in-out);
+
+  &.shakeHead {
+    animation: shakeHead 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  }
+}
+
+.orangeMouth {
+  position: absolute;
+  width: 28px;
+  height: 14px;
+  border: 3px solid @color-dark;
+  border-top: none;
+  border-radius: 0 0 14px 14px;
+  opacity: 0;
+  .transition(all, 0.7s, ease-in-out);
+
+  &.visible {
+    opacity: 1;
+  }
+
+  &.shakeHead {
+    animation: shakeHead 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  }
+}
+
+// ── Right Panel / Form ───────────────────────────────────────
+.rightPanel {
+  .flex-center();
+  background: @color-bg-white;
+  padding: 40px;
+}
+
+.formContainer {
+  width: 100%;
+  max-width: 400px;
+}
+
+.sparkleIcon {
+  .flex-center();
+  margin-bottom: 24px;
+
+  svg {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+.formHeader {
+  text-align: center;
+  margin-bottom: 36px;
+
+  h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: @color-bg-dark;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+
+  p {
+    font-size: 14px;
+    color: @color-text-muted;
+  }
+}
+
+// ── Form Group (input rows) ───────────────────────────────────
+.formGroup {
+  margin-bottom: 20px;
+
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: @color-text-dark;
+    margin-bottom: 8px;
+
+    &.errorLabel {
+      color: @color-error;
+    }
+  }
+
+  .inputWrapper {
+    position: relative;
+  }
+
+  input {
+    width: 100%;
+    height: @input-height;
+    border: none;
+    border-bottom: 1.5px solid @color-border;
+    padding: 0 40px 0 0;
+    font-size: 15px;
+    font-family: inherit;
+    color: @color-bg-dark;
+    background: transparent;
+    outline: none;
+    .transition(border-color, 0.3s);
+
+    &:focus {
+      border-bottom-color: @color-primary;
+    }
+
+    &::placeholder {
+      color: #ccc;
+    }
+
+    &[type="password"]:not(:placeholder-shown) {
+      letter-spacing: 2px;
+    }
+
+    &.error {
+      border-bottom-color: @color-error;
+    }
+  }
+}
+
+// ── Toggle Password Button ────────────────────────────────────
+.togglePassword {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  padding: 6px;
+  .transition(color, 0.2s);
+
+  &:hover {
+    color: @color-text-dark;
+  }
+}
+
+// ── Form Options row ─────────────────────────────────────────
+.formOptions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.rememberMe {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: @color-text-label;
+  cursor: pointer;
+
+  input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: @color-primary;
+    cursor: pointer;
+  }
+}
+
+.forgotLink {
+  font-size: 13px;
+  color: @color-primary;
+  text-decoration: none;
+  font-weight: 500;
+  .transition(opacity, 0.2s);
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+// ── Buttons ───────────────────────────────────────────────────
+// Shared button base
+.btnBase() {
+  position: relative;
+  width: 100%;
+  height: @btn-height;
+  border-radius: @btn-radius;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  overflow: hidden;
+  .transition(all, 0.3s);
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .btnText {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    .transition(all, 0.3s);
+  }
+
+  .btnHoverContent {
+    .absolute-fill();
+    .flex-center();
+    gap: 8px;
+    background: @color-primary;
+    color: #fff;
+    opacity: 0;
+    .transition(all, 0.3s);
+    border-radius: @btn-radius;
+  }
+
+  &:hover:not(:disabled) {
+    .btnText {
+      transform: translateX(40px);
+      opacity: 0;
+    }
+    .btnHoverContent {
+      opacity: 1;
+    }
+  }
+}
+
+.btnLogin {
+  .btnBase();
+  border: 1.5px solid @color-bg-dark;
+  background: @color-bg-dark;
+  color: #fff;
+  margin-bottom: 14px;
+}
+
+.btnGoogle {
+  .btnBase();
+  border: 1.5px solid @color-border;
+  background: #f5f5f5;
+  color: @color-text-dark;
+}
+
+.googleIcon {
+  width: 18px;
+  height: 18px;
+}
+
+// ── Error Message ─────────────────────────────────────────────
+.errorMsg {
+  padding: 10px 14px;
+  font-size: 13px;
+  color: @color-error;
+  background: @color-error-bg;
+  border: 1px solid @color-error-border;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+// ── Sign-up Link ──────────────────────────────────────────────
+.signupLink {
+  text-align: center;
+  font-size: 13px;
+  color: @color-text-muted;
+  margin-top: 32px;
+
+  a {
+    color: @color-bg-dark;
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// ── Responsive ───────────────────────────────────────────────
+@media (max-width: 900px) {
+  .loginPage {
+    grid-template-columns: 1fr;
+  }
+
+  .leftPanel {
+    display: none;
+  }
+}

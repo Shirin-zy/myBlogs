@@ -1,0 +1,391 @@
+// ── 变量 ───────────────────────────────────────────────────
+// Home 路由组固定亮色主题，通过 .homeRoot 覆盖 CSS 变量，不依赖 html.dark class
+@nav-height: 64px;
+@nav-transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+@fab-size: 44px;
+
+// ── Home 专属亮色主题（覆盖 globals.css 的 dark 模式变量）───
+.homeRoot {
+  // 硬编码亮色值，继承给所有子元素。
+  // 无论 html 是否有 dark class，这些变量都固定为亮色。
+  --color-foreground: #0a0a0a;
+  --color-background: #ffffff;
+  --color-primary: hsl(221.2 83.2% 53.3%);
+  --color-primary-foreground: hsl(210 40% 98%);
+  --color-secondary: hsl(210 40% 96.1%);
+  --color-secondary-foreground: hsl(222.2 47.4% 11.2%);
+  --color-muted: hsl(210 40% 96.1%);
+  --color-muted-foreground: hsl(215.4 16.3% 46.9%);
+  --color-accent: hsl(210 40% 96.1%);
+  --color-accent-foreground: hsl(222.2 47.4% 11.2%);
+  --color-destructive: hsl(0 84.2% 60.2%);
+  --color-destructive-foreground: hsl(210 40% 98%);
+  --color-border: hsl(214.3 31.8% 91.4%);
+  --color-input: hsl(214.3 31.8% 91.4%);
+  --color-ring: hsl(221.2 83.2% 53.3%);
+  --color-card: hsl(0 0% 100%);
+  --color-card-foreground: hsl(222.2 84% 4.9%);
+  --color-popover: hsl(0 0% 100%);
+  --color-popover-foreground: hsl(222.2 84% 4.9%);
+  --color-background-rgb: 255 255 255;
+}
+
+// ── 全局布局 ─────────────────────────────────────────────────
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-background);
+  color: var(--color-foreground);
+  // 隐藏滚动条（保留滚动能力）
+  scrollbar-width: none;       // Firefox
+  -ms-overflow-style: none;    // IE / Edge Legacy
+
+  &::-webkit-scrollbar {
+    display: none;             // Chrome / Safari / Edge
+  }
+}
+
+// ── 导航栏 ───────────────────────────────────────────────────
+.navs {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 0 2rem;
+  // border-bottom 使用伪元素实现，避免 border 在过渡时产生白线
+  transition: @nav-transition;
+
+  // 用伪元素承载底部分割线，单独控制 opacity 过渡，避免白线
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--color-border);
+    opacity: 0;
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+  }
+
+  // 顶部透明态：导航隐藏、无背景
+  &.top {
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
+    // 用 opacity 淡出整个导航，避免 translateY 偏移时底边残留
+    opacity: 0;
+    pointer-events: none;
+
+    &::after {
+      opacity: 0;
+    }
+
+    .logo {
+      padding: 1.5rem 0;
+      transition: @nav-transition;
+    }
+
+    .logoIcon {
+      width: 32px;
+      height: 32px;
+      color: var(--color-primary);
+    }
+  }
+
+  // 滚动后毛玻璃态
+  &.scrolled {
+    background: rgba(var(--color-background-rgb, 255 255 255) / 0.95);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.08);
+    opacity: 1;
+    pointer-events: auto;
+
+    &::after {
+      opacity: 1;
+    }
+  }
+}
+
+// ── 导航内容区（scrolled 状态）────────────────────────────────
+.navContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: @nav-height;
+  transition: @nav-transition;
+}
+
+// ── Logo ─────────────────────────────────────────────────────
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  transition: @nav-transition;
+
+  .logoIcon {
+    width: 20px;
+    height: 20px;
+    color: var(--color-primary);
+    transition: transform 0.3s ease;
+  }
+
+  &:hover .logoIcon {
+    transform: rotate(-10deg) scale(1.1);
+  }
+}
+
+.logoText {
+  font-size: 1.15rem;
+  font-weight: 700;
+  background-image: linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transition: @nav-transition;
+}
+
+// ── 导航列表 ─────────────────────────────────────────────────
+.navList {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  gap: 4px;
+  opacity: 1;
+  transform: translateX(0);
+  transition: @nav-transition;
+
+  li {
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:nth-child(1) { transition-delay: 0.1s; }
+    &:nth-child(2) { transition-delay: 0.15s; }
+    &:nth-child(3) { transition-delay: 0.2s; }
+    &:nth-child(4) { transition-delay: 0.25s; }
+  }
+}
+
+// ── 导航链接 ─────────────────────────────────────────────────
+.navLink {
+  display: block;
+  padding: 6px 14px;
+  border-radius: 6px;
+  color: var(--color-muted-foreground);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 14px;
+    right: 14px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-primary), #66a6ff);
+    border-radius: 1px;
+    width: 0;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &:hover {
+    color: var(--color-foreground);
+    background: var(--color-accent);
+    transform: translateY(-1px);
+
+    &::after {
+      width: calc(100% - 28px);
+    }
+  }
+
+  &.navLinkActive {
+    color: var(--color-primary);
+    background: var(--color-accent);
+    font-weight: 600;
+
+    &::after {
+      width: calc(100% - 28px);
+    }
+  }
+}
+
+// ── 图标按钮（主题切换 / 汉堡菜单）──────────────────────────
+.iconBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--color-muted-foreground);
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: var(--color-foreground);
+    background: var(--color-accent);
+  }
+}
+
+.iconBtnSvg {
+  width: 16px;
+  height: 16px;
+}
+
+// 汉堡菜单仅移动端显示
+.hamburger {
+  display: none;
+
+  @media (max-width: 768px) {
+    display: flex;
+  }
+}
+
+// ── 移动端展开菜单 ───────────────────────────────────────────
+.mobileMenu {
+  border-top: 1px solid var(--color-border);
+  background: var(--color-background);
+  padding: 8px 0;
+
+  @media (min-width: 769px) {
+    display: none;
+  }
+}
+
+.mobileLink {
+  display: block;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-muted-foreground);
+  text-decoration: none;
+  border-radius: 6px;
+  margin: 2px 8px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: var(--color-foreground);
+    background: var(--color-accent);
+  }
+
+  &.mobileLinkActive {
+    color: var(--color-primary);
+    background: var(--color-accent);
+    font-weight: 600;
+  }
+}
+
+// ── 页脚 ─────────────────────────────────────────────────────
+.footer {
+  border-top: 1px solid var(--color-border);
+  background: var(--color-background);
+  margin-top: auto;
+}
+
+.footerInner {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 24px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: var(--color-muted-foreground);
+}
+
+// ── 浮动操作按钮组（FAB）──────────────────────────────────────
+.fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 999;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 10px;
+}
+
+// 主触发按钮
+.fabTrigger {
+  width: @fab-size;
+  height: @fab-size;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+// 子操作按钮
+.fabItem {
+  width: @fab-size;
+  height: @fab-size;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: var(--color-background);
+  color: var(--color-foreground);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  // 默认收起（通过 .fabOpen 展开）
+  opacity: 0;
+  transform: scale(0.6) translateY(10px);
+  pointer-events: none;
+
+  &:hover {
+    background: var(--color-accent);
+    transform: scale(1.05) translateY(0);
+  }
+
+  &.fabItemHidden {
+    visibility: hidden;
+  }
+}
+
+// 展开状态
+.fabOpen {
+  .fabItem {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    pointer-events: auto;
+
+    &:nth-child(1) { transition-delay: 0.05s; }
+    &:nth-child(2) { transition-delay: 0.1s; }
+  }
+}
+
+.fabIcon {
+  width: 16px;
+  height: 16px;
+}
