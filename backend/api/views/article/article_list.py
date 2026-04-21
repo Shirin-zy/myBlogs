@@ -80,7 +80,6 @@ def article_list(request):
     return Response(
         {
             "code": 200,
-            "status": "success",
             "message": f"用户 {user.get('username')} 获取文章列表成功",
             "data": {"total": len(mock_articles), "list": mock_articles},
         }

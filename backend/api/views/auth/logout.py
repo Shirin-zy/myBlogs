@@ -12,7 +12,7 @@ def logout(request):
     """
     response = Response(
         {
-            "status": "success",
+            "code": 200,
             "message": "登出成功",
         }
     )

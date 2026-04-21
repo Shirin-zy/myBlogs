@@ -23,7 +23,7 @@ export interface LoginUserInfo {
 
 /** 登录接口响应 */
 export interface LoginResponse {
-  status: "success" | "error";
+  code: string | number;
   message: string;
   data: {
     token: string;
@@ -49,7 +49,7 @@ export async function loginApi(payload: LoginPayload): Promise<LoginResponse> {
 
   const data: LoginResponse = await res.json();
 
-  if (data.status !== "success") {
+  if (data.code !== 200) {
     throw new Error(data.message ?? "登录失败");
   }
 
