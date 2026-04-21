@@ -6,6 +6,7 @@ from functools import wraps
 from rest_framework.response import Response
 from rest_framework import status
 
+
 def generate_token(payload: dict, expiry_hours: int = 24) -> str:
     """
     生成 JWT Token
@@ -15,17 +16,20 @@ def generate_token(payload: dict, expiry_hours: int = 24) -> str:
     """
     # 复制 payload 以避免修改原始数据
     data = payload.copy()
-    
+
     # 设置过期时间
     expire = datetime.datetime.utcnow() + datetime.timedelta(hours=expiry_hours)
-    data.update({
-        "exp": expire,
-        "iat": datetime.datetime.utcnow()  # 签发时间
-    })
-    
+    data.update(
+        {
+            "exp": expire,
+            "iat": datetime.datetime.utcnow(),  # 签发时间
+        }
+    )
+
     # 使用 Django 的 SECRET_KEY 进行签名
     token = jwt.encode(data, settings.SECRET_KEY, algorithm="HS256")
     return token
+
 
 def verify_token(token: str) -> dict:
     """
@@ -43,35 +47,40 @@ def verify_token(token: str) -> dict:
         # Token 无效
         return None
 
+
 def get_auth_user(request) -> dict:
     """
-    从请求头中提取并校验 Bearer Token
+    从 Cookie 中提取并校验 Token
     :param request: Django request 对象
     :return: 校验成功返回用户信息 payload，失败返回 None
     """
-    auth_header = request.headers.get('Authorization')
-    if not auth_header or not auth_header.startswith('Bearer '):
-        return None
-    
-    token = auth_header.split(' ')[1]
+    # 从 Cookie 中获取 blog-session
+    auth_cookie = request.COOKIES.get("blog-session")
+
+    token = auth_cookie
     return verify_token(token)
+
 
 def jwt_auth_required(view_func):
     """
     JWT 鉴权装饰器
-    用于校验请求头中的 Authorization: Bearer <token>
+    用于校验 Cookie 中的 blog-session: Bearer <token>
     """
+
     @wraps(view_func)
     def wrapped_view(request, *args, **kwargs):
         user = get_auth_user(request)
         if not user:
-            return Response({
-                "code": 403,
-                "message": "无权限：请提供有效的 Bearer Token (Authorization: Bearer <token>)"
-            }, status=status.HTTP_403_FORBIDDEN)
-        
+            return Response(
+                {
+                    "code": 403,
+                    "message": "无权限：请提供有效的 Cookie (blog-session: Bearer <token>)",
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
         # 将解析出的用户信息注入 request 对象，方便视图函数使用
         request.auth_user = user
         return view_func(request, *args, **kwargs)
-    
+
     return wrapped_view

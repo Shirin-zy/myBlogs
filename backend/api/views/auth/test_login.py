@@ -20,8 +20,10 @@ def test_login(request):
 
     # 生成 Token，默认过期时间为 24 小时
     token = generate_token(user_payload)
+    # 按照用户要求，cookie 中的内容为原本的 Authorization 内容，即包含 "Bearer " 前缀
+    cookie_value = f"Bearer {token}"
 
-    return Response(
+    response = Response(
         {
             "status": "success",
             "message": "登录成功",
@@ -31,3 +33,14 @@ def test_login(request):
             },
         }
     )
+
+    # 设置 Cookie，名为 blog-session，过期时间设为 24 小时（与 token 一致）
+    response.set_cookie(
+        key="blog-session",
+        value=cookie_value,
+        max_age=24 * 3600,
+        httponly=True,  # 提高安全性，防止 XSS 获取 cookie
+        samesite='Lax'  # 跨站请求保护
+    )
+
+    return response
