@@ -5,7 +5,7 @@
  * 不走通用 http 封装（避免 code 字段校验冲突），直接使用 fetch。
  */
 
-const API_BASE_URL = "http://127.0.0.1:5173/api";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "/api";
 
 /** 登录请求参数 */
 export interface LoginPayload {

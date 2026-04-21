@@ -4,6 +4,7 @@ import styles from "./index.module.less"
 import { ArticleProps } from "./interface"
 import ArticleItem from "./articleItem/index"
 import { useState, useEffect } from "react"
+import { http } from "@/lib/http"
 
 interface FilterProps {
     categorys: { name: string; type: string }[]
@@ -27,9 +28,12 @@ const Article = () => {
     const [articles, setArticles] = useState<ArticleProps[]>([])
 
     const getArticles = async () => {
-        const res = await fetch('http://127.0.0.1:5173/api/blogs/articleList/')
-        const data = await res.json()
-        setArticles(data)
+        try {
+            const data = await http.get<ArticleProps[]>('/blogs/articleList/')
+            setArticles(data)
+        } catch (error) {
+            console.error('获取文章列表失败:', error)
+        }
     }
     useEffect(() => {
         getArticles()
