@@ -1,9 +1,10 @@
 'use client'
 
 import styles from "./index.module.less"
-import { ArticleProps } from "./interface"
+import { type ArticleItem as ArticleProps } from "@/lib/api/article"
 import ArticleItem from "./articleItem/index"
 import { useState, useEffect } from "react"
+import { useApi } from "@/hooks/api-context"
 import { http } from "@/lib/http"
 
 interface FilterProps {
@@ -26,11 +27,11 @@ const Filter = (props: FilterProps) => {
 
 const Article = () => {
     const [articles, setArticles] = useState<ArticleProps[]>([])
-
+    const { article } = useApi()
     const getArticles = async () => {
         try {
-            const data = await http.get<ArticleProps[]>('/blogs/articleList')
-            setArticles(data?.list || [])
+            const data = await article.getArticles()
+            setArticles(data.list || [])
         } catch (error) {
             console.error('获取文章列表失败:', error)
         }

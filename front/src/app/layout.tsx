@@ -4,6 +4,7 @@ import './globals.css'
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import { ThemeScopeGuard } from '@/components/providers/theme-scope-guard'
 import { AppStoreProvider } from '@/hooks/store/app-store'
+import { ApiProvider } from '@/hooks/api-context'
 import { Toaster } from '@/components/ui/toaster'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -59,8 +60,10 @@ export default function RootLayout({
         >
           <ThemeScopeGuard>
             <AppStoreProvider>
-              {children}
-              <Toaster />
+              <ApiProvider>
+                {children}
+                <Toaster />
+              </ApiProvider>
             </AppStoreProvider>
           </ThemeScopeGuard>
         </ThemeProvider>

@@ -1,16 +1,44 @@
-import type { ApiResponse } from "@/types";
-
 /** API 基础路径 */
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "/api";
 
 /** HTTP 请求方法类型 */
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 
+export interface ApiErrorShape {
+  status: number;
+  code?: string;
+  message: string;
+  details?: unknown;
+}
+
+export class ApiError extends Error {
+  status: number;
+  code?: string;
+  details?: unknown;
+
+  constructor(shape: ApiErrorShape) {
+    super(shape.message);
+    this.name = "ApiError";
+    this.status = shape.status;
+    this.code = shape.code;
+    this.details = shape.details;
+  }
+}
+
 /** 请求配置 */
-interface RequestConfig extends RequestInit {
+export interface RequestConfig extends RequestInit {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   params?: Record<string, any>;
 }
+
+/** HTTP 客户端接口定义 */
+// export interface HttpClient {
+//   get<T>(path: string, config?: RequestConfig): Promise<T>;
+//   post<T>(path: string, body?: unknown, config?: RequestConfig): Promise<T>;
+//   put<T>(path: string, body?: unknown, config?: RequestConfig): Promise<T>;
+//   patch<T>(path: string, body?: unknown, config?: RequestConfig): Promise<T>;
+//   delete<T>(path: string, config?: RequestConfig): Promise<T>;
+// }
 
 /**
  * 构建 URL 查询参数
@@ -28,7 +56,7 @@ function buildQueryString(params: Record<string, any>): string {
 
 /**
  * 基础 HTTP 请求封装
- * 自动携带 Token、处理错误、格式化响应
+ * 自动携带 Token、处理错误、返回后端响应结构
  */
 async function request<T>(
   method: HttpMethod,
@@ -63,13 +91,9 @@ async function request<T>(
       throw new Error(`HTTP Error: ${response.status}`);
     }
 
-    const data: ApiResponse<T> = await response.json();
-
-    if (data.code !== 0 && data.code !== 200) {
-      throw new Error(data.message ?? "请求失败");
-    }
-
-    return data.data;
+    // 按照用户需求，直接返回后端原始响应数据结构 T
+    const data: T = await response.json();
+    return data;
   } catch (error) {
     console.error(`[API] ${method} ${path} failed:`, error);
     throw error;
@@ -89,3 +113,6 @@ export const http = {
   delete: <T>(path: string, config?: RequestConfig) =>
     request<T>("DELETE", path, config),
 };
+
+/** HTTP 客户端类型定义 */
+export type HttpClient = typeof http;
