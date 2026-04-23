@@ -307,85 +307,9 @@
   color: var(--color-muted-foreground);
 }
 
-// ── 浮动操作按钮组（FAB）──────────────────────────────────────
-.fab {
+.floatButtonContainer {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
+  bottom: 64px;
+  right: 64px;
   z-index: 999;
-  display: flex;
-  flex-direction: column-reverse;
-  align-items: center;
-  gap: 10px;
-}
-
-// 主触发按钮
-.fabTrigger {
-  width: @fab-size;
-  height: @fab-size;
-  border-radius: 50%;
-  border: none;
-  background: var(--color-primary);
-  color: var(--color-primary-foreground);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-  &:hover {
-    transform: scale(1.08);
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
-}
-
-// 子操作按钮
-.fabItem {
-  width: @fab-size;
-  height: @fab-size;
-  border-radius: 50%;
-  border: 1px solid var(--color-border);
-  background: var(--color-background);
-  color: var(--color-foreground);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  // 默认收起（通过 .fabOpen 展开）
-  opacity: 0;
-  transform: scale(0.6) translateY(10px);
-  pointer-events: none;
-
-  &:hover {
-    background: var(--color-accent);
-    transform: scale(1.05) translateY(0);
-  }
-
-  &.fabItemHidden {
-    visibility: hidden;
-  }
-}
-
-// 展开状态
-.fabOpen {
-  .fabItem {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-    pointer-events: auto;
-
-    &:nth-child(1) { transition-delay: 0.05s; }
-    &:nth-child(2) { transition-delay: 0.1s; }
-  }
-}
-
-.fabIcon {
-  width: 16px;
-  height: 16px;
 }

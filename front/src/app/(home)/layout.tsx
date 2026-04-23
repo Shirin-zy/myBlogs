@@ -3,9 +3,11 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { PenSquare, Menu, X, ArrowUp, Settings } from 'lucide-react'
+import { PenSquare, Menu, X, ArrowUp } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { debounce } from '@/lib/utils'
+import FloatButton from '@/components/home/floatButton'
+import AIChatCard from '@/components/home/aiChatCard'
 import styles from './layout.module.less'
 
 const navLinks = [
@@ -31,7 +33,7 @@ export default function HomeGroupLayout({ children }: { children: React.ReactNod
   const [isScrolled, setIsScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [showBackTop, setShowBackTop] = useState(false)
-  const [fabOpen, setFabOpen] = useState(false)
+  const [visible, setVisible] = useState(false)
 
   // 记录整屏滚动是否进行中
   const isScrolling = useRef(false)
@@ -44,6 +46,10 @@ export default function HomeGroupLayout({ children }: { children: React.ReactNod
       document.documentElement.classList.remove('hide-scrollbar')
     }
   }, [])
+
+  const openBiliBili = () => {
+    window.open('https://space.bilibili.com/39473070', '_blank')
+  }
 
   // ── 滚动监听 ──────────────────────────────────────────────
   const handleScroll = useCallback(() => {
@@ -176,28 +182,13 @@ export default function HomeGroupLayout({ children }: { children: React.ReactNod
       </footer>
 
       {/* ── 浮动操作按钮组 ── */}
-      <div className={cn(styles.fab, fabOpen && styles.fabOpen)}>
-        {/* 子按钮：回到顶部 */}
-        <button
-          className={cn(styles.fabItem, !showBackTop && styles.fabItemHidden)}
-          onClick={scrollToTop}
-          title="回到顶部"
-        >
-          <ArrowUp className={styles.fabIcon} />
-        </button>
-
-        {/* 主触发按钮 */}
-        <button
-          className={cn(styles.fabTrigger)}
-          onClick={() => setFabOpen((v) => !v)}
-          aria-label="快捷操作"
-        >
-          {fabOpen
-            ? <X className={styles.fabIcon} />
-            : <Settings className={styles.fabIcon} />
-          }
-        </button>
+      <div className={styles.floatButtonContainer}>
+        <FloatButton downIconClick={scrollToTop} upIconClick={openBiliBili} leftIconClick={() => {
+          setVisible(pre => !pre)
+        }} showBackTop={showBackTop} />
       </div>
+
+      <AIChatCard visible={visible} setVisible={setVisible} />
     </div>
   )
 }
