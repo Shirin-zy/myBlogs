@@ -48,7 +48,10 @@ const Recommend: React.FC<RecommendProps> = ({
     const [showGrid, setShowGrid] = useState(false)
 
     return (
-        <div className={styles.container}>
+        <div 
+            className={styles.container} 
+            onMouseLeave={() => setShowGrid(false)}
+        >
             <div className={`${styles.gridContainer} ${showGrid ? "" : styles.hidden}`}>
                 {items.map((item, index) => (
                     <div key={index} className={styles.smallCard}>

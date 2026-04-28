@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils'
 import { debounce } from '@/lib/utils'
 import FloatButton from '@/components/home/floatButton'
 import AIChatCard from '@/components/home/aiChatCard'
+import Footer from '@/components/home/footer'
 import styles from './layout.module.less'
 
 const navLinks = [
@@ -175,11 +176,7 @@ export default function HomeGroupLayout({ children }: { children: React.ReactNod
       <main>{children}</main>
 
       {/* ── 页脚 ── */}
-      <footer className={styles.footer}>
-        <div className={styles.footerInner}>
-          <span>© {new Date().getFullYear()} Personal Blog · 用心记录，分享成长</span>
-        </div>
-      </footer>
+      <Footer />
 
       {/* ── 浮动操作按钮组 ── */}
       <div className={styles.floatButtonContainer}>

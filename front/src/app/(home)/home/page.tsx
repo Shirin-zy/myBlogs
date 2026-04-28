@@ -6,7 +6,8 @@ import Player from "@/components/home/videoPlayer"
 import HeaderInfo from "@/components/home/headerInfo"
 import WebMessage from "@/components/home/headerMessage"
 import Article from "@/components/home/article"
-import SideInfo from "@/components/home/sideInfo"
+import SiteInfoCard from "@/components/home/sideInfo"
+import UserInfoCard from "@/components/home/userInfoCard"
 // import { Spin } from "antd"
 import { useEffect, useState } from "react"
 
@@ -41,7 +42,13 @@ const Home = () => {
                 <HeaderInfo />
                 <div className={style.content}>
                     <Article />
-                    <SideInfo />
+                    <div className={style.side}>
+                        <UserInfoCard width={350} />
+                        {/* 粘性侧边栏，实现智能吸附效果 */}
+                        <div className={style.stickyWrapper}>
+                            <SiteInfoCard />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

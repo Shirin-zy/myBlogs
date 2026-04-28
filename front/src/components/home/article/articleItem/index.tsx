@@ -2,10 +2,10 @@
 
 import styles from "./index.module.less"
 import { MessageCircle } from "lucide-react"
-import { ArticleProps } from "../interface"
+import { type ArticleItem as ArticleProps } from "@/lib/api/article"
 
 const ArticleItem = (props: ArticleProps) => {
-    const { id, title, createTime, tags, category, is_new, bgPicture, comment } = props
+    const { id, title, created_at, tags, category, is_new, bgPicture, comment } = props
     return (
         <div className={styles.card}>
             <div className={styles.cover}>
@@ -29,7 +29,7 @@ const ArticleItem = (props: ArticleProps) => {
                             </span>
                         ))}
                     </div>
-                    <div className={styles.date}>{createTime}</div>
+                    <div className={styles.date}>{created_at}</div>
                 </div>
             </div>
         </div>

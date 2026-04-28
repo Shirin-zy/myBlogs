@@ -1,0 +1,156 @@
+.footer {
+  width: 100%;
+  background-color: transparent;
+  padding: 60px 0 40px;
+  // border-top: 1px solid rgba(187, 195, 207, 0.2);
+  color: #666;
+  margin-top: 50px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.topSection {
+  text-align: center;
+  margin-bottom: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.copyright {
+  font-size: 14px;
+  color: #333;
+}
+
+.badgeLine {
+  display: flex;
+  gap: 8px;
+}
+
+.miniBadge {
+  font-size: 10px;
+  padding: 1px 6px;
+  background: #f0f0f0;
+  border-radius: 4px;
+  color: #999;
+}
+
+.status {
+  font-size: 13px;
+  color: #666;
+}
+
+.middleSection {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+  margin-bottom: 50px;
+  max-width: 900px;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.columnTitle {
+  font-size: 15px;
+  color: #333;
+  font-weight: 500;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.refreshIcon {
+  color: #999;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  &:hover {
+    transform: rotate(180deg);
+  }
+}
+
+.linkList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.link {
+  font-size: 14px;
+  color: #666;
+  text-decoration: none;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #4e70ff;
+  }
+}
+
+.bottomSection {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.badges {
+  display: flex;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.badge {
+  display: flex;
+  font-size: 11px;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.badgeKey {
+  background: #4b4b4b;
+  color: white;
+  padding: 2px 8px;
+}
+
+.badgeValue {
+  background: #4e70ff;
+  color: white;
+  padding: 2px 8px;
+}
+
+.badge:nth-child(2) .badgeValue {
+  background: #c141ef;
+}
+
+@media (max-width: 768px) {
+  .middleSection {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .middleSection {
+    grid-template-columns: 1fr;
+    text-align: center;
+    .columnTitle {
+      justify-content: center;
+    }
+  }
+}

@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { BlogHome } from '@/components/home/blog-home'
 import { redirect } from 'next/navigation'
 
 export const metadata: Metadata = {

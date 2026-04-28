@@ -1,0 +1,134 @@
+.editorPage {
+  background-color: #f4f5f7;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  .header {
+    height: 60px;
+    background: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 24px;
+    border-bottom: 1px solid #e8e8e8;
+    position: sticky;
+    top: 0;
+    z-index: 1001;
+
+    .titleInput {
+      flex: 1;
+      max-width: 600px;
+      border: none;
+      font-size: 18px;
+      font-weight: 500;
+      outline: none;
+      color: #333;
+      margin-right: 20px;
+      &::placeholder {
+        color: #bfbfbf;
+      }
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+
+      .saveStatus {
+        font-size: 13px;
+        color: #8c8c8c;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        &::before {
+          content: '';
+          display: inline-block;
+          width: 6px;
+          height: 6px;
+          background: #52c41a;
+          border-radius: 50%;
+        }
+      }
+
+      .btnGroup {
+        display: flex;
+        gap: 12px;
+      }
+
+      button {
+        padding: 6px 16px;
+        border-radius: 4px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 1px solid transparent;
+
+        &.saveBtn {
+          background: #0052d9;
+          color: #fff;
+          &:hover {
+            background: #003cab;
+          }
+        }
+
+        &.backBtn {
+          background: #fff;
+          border-color: #dcdcdc;
+          color: #666;
+          &:hover {
+            border-color: #0052d9;
+            color: #0052d9;
+          }
+        }
+      }
+    }
+  }
+
+  .toolbarWrapper {
+    background: #fff;
+    border-bottom: 1px solid #e8e8e8;
+    position: sticky;
+    top: 60px;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+    .toolbarContainer {
+      width: 100%;
+      max-width: 1200px;
+    }
+  }
+
+  .scrollContainer {
+    flex: 1;
+    overflow-y: auto;
+    padding: 30px 0;
+    display: flex;
+    justify-content: center;
+
+    .editorWrapper {
+      width: 850px; // 模拟 A4 纸张宽度
+      min-height: 1000px;
+      background: #fff;
+      padding: 60px 80px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+      border-radius: 2px;
+      cursor: text;
+
+      :global {
+        .w-e-text-container {
+          background-color: transparent !important;
+          border: none !important;
+          min-height: 800px !important;
+          padding: 0 !important;
+        }
+        .w-e-content {
+          padding: 0 !important;
+        }
+      }
+    }
+  }
+}
+

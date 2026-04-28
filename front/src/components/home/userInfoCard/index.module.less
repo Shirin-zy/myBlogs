@@ -1,0 +1,238 @@
+.container {
+  width: 100%;
+  container-type: inline-size;
+  container-name: user-card;
+}
+
+.shell {
+  width: 100%;
+  background: #ffffff;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  margin: 0 auto;
+  transition: all 0.3s ease;
+}
+
+.head {
+  height: 240px;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+
+  .bg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-position: center;
+    background-size: cover;
+    z-index: -1;
+    transform: skewY(-4deg);
+    transform-origin: 0 0;
+  }
+}
+
+.cover {
+  position: absolute;
+  top: 140px;
+  left: 25px;
+  width: 160px;
+  height: 160px;
+  z-index: 2;
+  border-radius: 50%;
+  border: 8px #fff solid;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  object-fit: cover;
+  transition: all 0.3s ease;
+}
+
+.data {
+  padding: 130px 0 0 210px;
+  text-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 3;
+
+  .title1 {
+    color: white;
+    font-size: 32px;
+    font-weight: 900;
+    margin-bottom: 5px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+
+    span {
+      margin-left: 8px;
+      background: #ffe44c;
+      border-radius: 4px;
+      color: #000000;
+      font-size: 12px;
+      padding: 1px 6px;
+      font-weight: normal;
+      text-shadow: none;
+    }
+  }
+
+  .title2 {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 500;
+  }
+}
+
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 15px;
+  line-height: 24px;
+  color: #444;
+}
+
+.tags {
+  padding-top: 60px;
+  width: 200px;
+  text-align: center;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+
+  .tag {
+    display: inline-block;
+    background: rgb(149, 178, 255);
+    color: #fff;
+    border-radius: 10px;
+    padding: 0 10px;
+    font-size: 12px;
+    margin: 3px;
+    line-height: 26px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: #eee4ad;
+      color: #444;
+    }
+  }
+}
+
+.introduce {
+  flex: 1;
+  min-width: 250px;
+  padding: 20px 0 0 25px;
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* 使用容器查询替代媒体查询，适配组件自身宽度 */
+
+/* 适配宽度小于 650px 但大于 450px 的情况 */
+@container user-card (max-width: 650px) and (min-width: 451px) {
+  .cover {
+    width: 130px;
+    height: 130px;
+    top: 150px;
+  }
+  .data {
+    padding: 150px 0 0 170px;
+    .title1 {
+      font-size: 24px;
+    }
+    .title2 {
+      font-size: 16px;
+    }
+  }
+  .tags {
+    width: 150px;
+    padding-top: 50px;
+  }
+}
+
+/* 适配宽度小于 450px 的情况 */
+@container user-card (max-width: 450px) {
+  .head {
+    height: 160px;
+  }
+
+  .cover {
+    width: 80px;
+    height: 80px;
+    top: 90px;
+    left: 15px; /* 头像恢复至左侧 */
+    transform: none;
+    border-width: 4px;
+  }
+
+  .data {
+    padding: 95px 10px 10px 105px; /* 增加左侧内边距，避开头像 */
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-shadow: none;
+
+    .title1 {
+      color: #fff;
+      font-size: 18px; /* 适度缩小文字 */
+      justify-content: flex-start;
+      margin-bottom: 2px;
+      white-space: normal;
+      text-align: left;
+      width: 100%;
+
+      span {
+        display: inline-block;
+        font-size: 10px;
+        padding: 0 4px;
+        margin-left: 5px;
+        vertical-align: middle;
+      }
+    }
+
+    .title2 {
+      color: #fff;
+      font-size: 13px;
+    }
+  }
+
+  .foot {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .tags {
+    width: 100%;
+    padding-top: 10px; /* 调整标签间距 */
+    margin-bottom: 8px;
+    text-align: left;
+    
+    .tag {
+      padding: 0 6px;
+      font-size: 10px;
+      line-height: 20px;
+      margin: 2px;
+    }
+  }
+
+  .introduce {
+    width: 100%;
+    padding: 0 5px;
+    text-align: left;
+    min-width: unset;
+    
+    p {
+      font-size: 12px;
+      -webkit-line-clamp: 4;
+    }
+  }
+}
