@@ -10,3 +10,4 @@ async def logout(response: Response, user=Depends(jwt_auth_dependency)):
         "code": 200,
         "message": "登出成功",
     }
+    

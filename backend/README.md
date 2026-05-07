@@ -50,10 +50,10 @@ backend/
    ```bash
    python main.py
    ```
-   服务将运行在: http://127.0.0.1:8000
+   服务将运行在: http://127.0.0.1:5173
 
 ## 接口说明
 
 - 所有 API 均以 `/api` 为前缀。
 - **认证**：使用 `blog-session` Cookie 存储 JWT Token。
-- **文档**：启动服务后访问 http://127.0.0.1:8000/docs 查看 Swagger 交互式文档。
+- **文档**：启动服务后访问 http://127.0.0.1:5173/docs 查看 Swagger 交互式文档。
