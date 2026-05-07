@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+python-multipart
+PyJWT
+openai
+# django (kept for reference or if needed for some utilities, but eventually can be removed)
+django
+djangorestframework
+django-cors-headers
