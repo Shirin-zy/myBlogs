@@ -1,7 +1,9 @@
 from fastapi import APIRouter
-from .wait_review import router as wait_review_router
-from .list import router as list_router
+from .allArticle import router as all_article_router
+from .publishedArticle import router as published_article_router
+from .save import router as save_router
 
 router = APIRouter()
-router.include_router(wait_review_router)
-router.include_router(list_router)
+router.include_router(all_article_router)
+router.include_router(published_article_router)
+router.include_router(save_router)

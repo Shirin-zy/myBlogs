@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { useRouter } from "next/navigation"
+import { useApi } from "@/hooks/api-context"
+import { type ArticleItem } from "@/lib/api/article"
+import { useState, useEffect } from "react"
 
 // 模拟数据
 const MOCK_POSTS = [
@@ -35,7 +38,18 @@ const MOCK_POSTS = [
 ]
 
 export function PostsTable() {
+  const api = useApi()
   const router = useRouter()
+  const [articles, setArticles] = useState<ArticleItem[]>([])
+
+  const getAllArticles = async () => {
+    const response = await api.article.getAllArticles()
+    setArticles(response.list)
+  }
+
+  useEffect(() => {
+    getAllArticles()
+  }, [])
 
   return (
     <div className="p-6">
@@ -63,7 +77,7 @@ export function PostsTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {MOCK_POSTS.map((post) => (
+            {articles.map((post) => (
               <TableRow
                 key={post.id}
                 onClick={() => {
@@ -73,13 +87,13 @@ export function PostsTable() {
               >
                 <TableCell className="font-medium">{post.title}</TableCell>
                 <TableCell>
-                  <Badge variant={post.status === "published" ? "default" : "secondary"}>
-                    {post.status === "published" ? "已发布" : "草稿"}
-                  </Badge>
+                  {post.state === "published" && <Badge variant="default">已发布</Badge>}
+                  {post.state === "draft" && <Badge variant="secondary">草稿</Badge>}
+                  {post.state === "takeoff" && <Badge variant="destructive">下架</Badge>}
                 </TableCell>
                 <TableCell>{post.category}</TableCell>
-                <TableCell>{post.createdAt}</TableCell>
-                <TableCell className="text-right">{post.views}</TableCell>
+                <TableCell>{post.created_at}</TableCell>
+                <TableCell className="text-right">{post.comment}</TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
                     <Button variant="ghost" size="icon" title="预览">
