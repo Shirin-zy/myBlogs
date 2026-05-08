@@ -111,7 +111,7 @@ export function PostsTable() {
             <h1 className="text-2xl font-bold text-foreground">文章管理</h1>
             <p className="text-muted-foreground mt-1">管理博客文章的创作、编辑与发布状态</p>
           </div>
-          <Button onClick={() => router.push("/article/edict")}>
+          <Button className="cursor-pointer" onClick={() => router.push("/article/edict")}>
             <Plus className="mr-2 h-4 w-4" />
             新增文章
           </Button>
