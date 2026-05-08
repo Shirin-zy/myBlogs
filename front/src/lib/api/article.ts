@@ -24,6 +24,7 @@ interface ArticleBackendResponse {
 }
 
 interface saveArticlePayload {
+  id?: string
   title: string
   content: string
   tags: string[]
@@ -42,17 +43,26 @@ interface articleDetailBackendResponse {
   data: ArticleItem & { content: string }
 }
 
+interface deleteArticleBackendResponse {
+  code: number
+  message: string
+  data: { id: string }
+}
 export interface ArticleApi {
   getArticles: () => Promise<ArticleResponse>
   getAllArticles: () => Promise<ArticleResponse>
   saveArticle: (payload: saveArticlePayload) => Promise<saveArticleResponse>
   getArticleDetail: (id: string) => Promise<ArticleItem & { content: string }>
+  deleteArticle: (id: string) => Promise<void>
+  updateArticleState: (id: string, state: "published" | "draft" | "takeoff") => Promise<void>
 }
 
 const PUBLISHED_ARTICLE_API_URL = "/blogs/articleList"
 const ALL_ARTICLE_API_URL = "/dashboard/allArticle"
 const SAVE_ARTICLE_API_URL = "/save"
+const DELETE_ARTICLE_API_URL = "/delete"
 const ARTICLE_DETAIL_API_URL = "/articleDetail"
+const UPDATE_ARTICLE_STATUS_API_URL = "/updateStatus"
 
 export const createArticleApi = (client: HttpClient): ArticleApi => {
   return {
@@ -136,6 +146,46 @@ export const createArticleApi = (client: HttpClient): ArticleApi => {
         throw new ApiError({
           status: 500,
           message: "Failed to load article detail",
+          code: String(500),
+          details: error,
+        })
+      }
+    },
+    async deleteArticle(id: string) {
+      try {
+        const response = await client.post<deleteArticleBackendResponse>(DELETE_ARTICLE_API_URL, { id })
+        if (response.code !== 0 && response.code !== 200) {
+          throw new ApiError({
+            status: 500,
+            message: response.message || "Failed to delete article",
+            code: String(response.code),
+            details: response,
+          })
+        }
+      } catch (error) {
+        throw new ApiError({
+          status: 500,
+          message: "Failed to delete article",
+          code: String(500),
+          details: error,
+        })
+      }
+    },
+    async updateArticleState(id, state) {
+      try {
+        const response = await client.post<any>(UPDATE_ARTICLE_STATUS_API_URL, { id, state })
+        if (response.code !== 0 && response.code !== 200) {
+          throw new ApiError({
+            status: 500,
+            message: response.message || "Failed to update article status",
+            code: String(response.code),
+            details: response,
+          })
+        }
+      } catch (error) {
+        throw new ApiError({
+          status: 500,
+          message: "Failed to update article status",
           code: String(500),
           details: error,
         })

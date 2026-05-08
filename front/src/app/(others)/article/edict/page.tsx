@@ -1,8 +1,8 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, Suspense } from "react"
 import dynamic from "next/dynamic"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { IDomEditor, IEditorConfig, IToolbarConfig } from "@wangeditor/editor"
 import { http } from "@/lib/http"
 import { useToast } from "@/hooks/use-toast"
@@ -19,8 +19,10 @@ const Toolbar = dynamic(() => import("@wangeditor/editor-for-react").then((mod) 
   ssr: false,
 })
 
-const EdictPage = () => {
+const EdictContent = () => {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const id = searchParams.get("id")
   const { toast } = useToast()
   // editor 实例
   const [editor, setEditor] = useState<IDomEditor | null>(null)
@@ -36,6 +38,31 @@ const EdictPage = () => {
   })
   // API 上下文
   const api = useApi()
+
+  // 如果有 id，说明是编辑模式，获取文章详情
+  useEffect(() => {
+    if (id) {
+      const fetchDetail = async () => {
+        try {
+          const detail = await api.article.getArticleDetail(id)
+          setTitle(detail.title)
+          setHtml(detail.content)
+          setArticleSettings({
+            bgPicture: detail.bgPicture || "",
+            category: detail.category || "",
+            tags: detail.tags || [],
+          })
+        } catch (error) {
+          toast({
+            variant: "destructive",
+            title: "加载失败",
+            description: "无法获取文章详情",
+          })
+        }
+      }
+      fetchDetail()
+    }
+  }, [id, api])
 
   // 工具栏配置
   const toolbarConfig: Partial<IToolbarConfig> = {}
@@ -110,6 +137,7 @@ const EdictPage = () => {
     }
 
     const articleData = {
+      id: id || undefined,
       title,
       content: html,
       ...articleSettings,
@@ -117,6 +145,10 @@ const EdictPage = () => {
 
     try {
       await api.article.saveArticle(articleData)
+      toast({
+        title: id ? "更新成功" : "发布成功",
+        description: id ? "文章已成功更新" : "文章已成功保存",
+      })
     } catch (error) {
       toast({
         variant: "destructive",
@@ -151,7 +183,7 @@ const EdictPage = () => {
               返回
             </button>
             <button className={styles.saveBtn} onClick={handleSave}>
-              保存
+              {id ? "保存修改" : "保存"}
             </button>
           </div>
         </div>
@@ -175,10 +207,22 @@ const EdictPage = () => {
           />
         </div>
         <div className={styles.sideWrapper}>
-          <ArticleDescCard onDataChange={setArticleSettings} />
+          <ArticleDescCard
+            key={articleSettings.bgPicture + articleSettings.category}
+            initialData={articleSettings}
+            onDataChange={setArticleSettings}
+          />
         </div>
       </div>
     </div>
+  )
+}
+
+const EdictPage = () => {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center h-screen">加载中...</div>}>
+      <EdictContent />
+    </Suspense>
   )
 }
 

@@ -1,6 +1,6 @@
 "use client"
 
-import { Plus, Pencil, Trash2, Eye } from "lucide-react"
+import { Plus, Pencil, Trash2, Eye, Loader2, Send, Ban, Edit3 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
@@ -8,43 +8,80 @@ import { useRouter } from "next/navigation"
 import { useApi } from "@/hooks/api-context"
 import { type ArticleItem } from "@/lib/api/article"
 import { useState, useEffect } from "react"
-
-// 模拟数据
-const MOCK_POSTS = [
-  {
-    id: "1",
-    title: "深入理解 Next.js 15 App Router",
-    status: "published",
-    category: "前端技术",
-    createdAt: "2024-03-20",
-    views: 1240,
-  },
-  {
-    id: "2",
-    title: "Tailwind CSS v4 新特性概览",
-    status: "draft",
-    category: "CSS",
-    createdAt: "2024-03-18",
-    views: 0,
-  },
-  {
-    id: "3",
-    title: "使用 TypeScript 构建高性能后端",
-    status: "published",
-    category: "后端开发",
-    createdAt: "2024-03-15",
-    views: 856,
-  },
-]
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { useToast } from "@/hooks/use-toast"
 
 export function PostsTable() {
   const api = useApi()
   const router = useRouter()
+  const { toast } = useToast()
   const [articles, setArticles] = useState<ArticleItem[]>([])
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [deleteId, setDeleteId] = useState<string | null>(null)
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
   const getAllArticles = async () => {
-    const response = await api.article.getAllArticles()
-    setArticles(response.list)
+    try {
+      const response = await api.article.getAllArticles()
+      setArticles(response.list)
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "加载失败",
+        description: "无法获取文章列表，请稍后重试",
+      })
+    }
+  }
+
+  const handleDelete = async () => {
+    if (!deleteId) return
+
+    setIsDeleting(true)
+    try {
+      await api.article.deleteArticle(deleteId)
+      toast({
+        title: "删除成功",
+        description: "文章已成功删除",
+      })
+      await getAllArticles()
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "删除失败",
+        description: "删除文章时出错，请重试",
+      })
+    } finally {
+      setIsDeleting(false)
+      setDeleteId(null)
+      setIsDeleteDialogOpen(false)
+    }
+  }
+
+  const handleUpdateState = async (id: string, state: "published" | "draft" | "takeoff") => {
+    try {
+      await api.article.updateArticleState(id, state)
+      toast({
+        title: "状态更新成功",
+        description: `文章状态已更新为 ${state === "published" ? "已发布" : state === "draft" ? "草稿" : "已下架"}`,
+      })
+      await getAllArticles()
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "状态更新失败",
+        description: "更新文章状态时出错，请重试",
+      })
+    }
   }
 
   useEffect(() => {
@@ -78,13 +115,7 @@ export function PostsTable() {
           </TableHeader>
           <TableBody>
             {articles.map((post) => (
-              <TableRow
-                key={post.id}
-                onClick={() => {
-                  router.push(`/article/${post.id}`)
-                }}
-                className="cursor-pointer"
-              >
+              <TableRow key={post.id}>
                 <TableCell className="font-medium">{post.title}</TableCell>
                 <TableCell>
                   {post.state === "published" && <Badge variant="default">已发布</Badge>}
@@ -96,13 +127,61 @@ export function PostsTable() {
                 <TableCell className="text-right">{post.comment}</TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
-                    <Button variant="ghost" size="icon" title="预览">
-                      <Eye className="h-4 w-4" />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      title="预览"
+                      onClick={() => {
+                        router.push(`/article/${post.id}`)
+                      }}
+                      className="cursor-pointer"
+                    >
+                      <Eye className="h-4 w-4 cursor-pointer" />
                     </Button>
-                    <Button variant="ghost" size="icon" title="编辑">
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="text-destructive" title="删除">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" title="更多操作" className="cursor-pointer">
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" sideOffset={4} className="min-w-[120px]">
+                        <DropdownMenuItem
+                          disabled={post.state === "published"}
+                          className="cursor-pointer flex items-center gap-2 py-2"
+                          onClick={() => handleUpdateState(post.id, "published")}
+                        >
+                          <Send className="h-4 w-4 text-primary" />
+                          <span>发布文章</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          disabled={post.state === "takeoff"}
+                          className="cursor-pointer flex items-center gap-2 py-2"
+                          onClick={() => handleUpdateState(post.id, "takeoff")}
+                        >
+                          <Ban className="h-4 w-4 text-destructive" />
+                          <span>下架文章</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          className="cursor-pointer flex items-center gap-2 py-2"
+                          onClick={() => {
+                            router.push(`/article/edict?id=${post.id}`)
+                          }}
+                        >
+                          <Edit3 className="h-4 w-4 text-muted-foreground" />
+                          <span>编辑内容</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-destructive cursor-pointer"
+                      title="删除"
+                      onClick={() => {
+                        setDeleteId(post.id)
+                        setIsDeleteDialogOpen(true)
+                      }}
+                    >
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
@@ -112,6 +191,35 @@ export function PostsTable() {
           </TableBody>
         </Table>
       </div>
+
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>确认删除文章？</AlertDialogTitle>
+            <AlertDialogDescription>此操作无法撤销。这将永久删除该文章及其所有相关数据。</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>取消</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault()
+                handleDelete()
+              }}
+              disabled={isDeleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  删除中...
+                </>
+              ) : (
+                "确认删除"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

@@ -12,7 +12,7 @@ import styles from "./page.module.less"
 const ArticleDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
   const router = useRouter()
   const { id } = use(params)
-  const [article, setArticle] = useState<ArticleItem | undefined>()
+  const [article, setArticle] = useState<(ArticleItem & { content: string }) | undefined>()
   const api = useApi()
 
   const fetchArticle = async () => {
@@ -27,7 +27,13 @@ const ArticleDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
   return (
     <div className={styles.detailPage}>
       {/* 顶部文章信息区域 */}
-      <header className={styles.header}>
+      <header
+        className={styles.header}
+        style={{
+          backgroundImage: article?.bgPicture ? `url(${article.bgPicture})` : undefined,
+        }}
+      >
+        <div className={styles.headerMask}></div>
         <button className={styles.backButton} onClick={() => router.back()} title="返回上次页面">
           <ArrowLeft size={20} />
           <span>返回</span>
@@ -52,16 +58,16 @@ const ArticleDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
               <RefreshCw /> 更新于 {article?.created_at}
             </div>
             <div className={styles.metaItem}>
-              <FileText /> 字数总计: {article?.wordCount || 0}
+              <FileText /> 字数总计: {0}
             </div>
             <div className={styles.metaItem}>
-              <Clock /> 阅读时长: {article?.readingTime || "5分钟"}
+              <Clock /> 阅读时长: {"5分钟"}
             </div>
             <div className={styles.metaItem}>
-              <Eye /> 阅读量: {article?.views || 0}
+              <Eye /> 阅读量: {0}
             </div>
             <div className={styles.metaItem}>
-              <MapPin /> {article?.location || "未知"}
+              <MapPin /> {"未知"}
             </div>
             <div className={styles.metaItem}>
               <MessageSquare /> 评论数: {article?.comment || 0}
@@ -82,9 +88,9 @@ const ArticleDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
             <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
           </defs>
           <g className={styles.parallax}>
-            <use xlinkHref="#gentle-wave" x="48" y="0" fill="rgba(255,255,255,0.7" />
-            <use xlinkHref="#gentle-wave" x="48" y="3" fill="rgba(255,255,255,0.5)" />
-            <use xlinkHref="#gentle-wave" x="48" y="5" fill="rgba(255,255,255,0.3)" />
+            <use xlinkHref="#gentle-wave" x="48" y="0" fill="rgba(244,247,249,0.7)" />
+            <use xlinkHref="#gentle-wave" x="48" y="3" fill="rgba(244,247,249,0.5)" />
+            <use xlinkHref="#gentle-wave" x="48" y="5" fill="rgba(244,247,249,0.3)" />
             <use xlinkHref="#gentle-wave" x="48" y="7" fill="#f4f7f9" />
           </g>
         </svg>
