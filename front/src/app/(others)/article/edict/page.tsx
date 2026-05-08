@@ -2,8 +2,12 @@
 
 import React, { useState, useEffect } from "react"
 import dynamic from "next/dynamic"
+import { useRouter } from "next/navigation"
 import { IDomEditor, IEditorConfig, IToolbarConfig } from "@wangeditor/editor"
+import { http } from "@/lib/http"
 import { useToast } from "@/hooks/use-toast"
+import { useApi } from "@/hooks/api-context"
+import ArticleDescCard from "@/components/dashboard/ArticleDescCard"
 import "@wangeditor/editor/dist/css/style.css"
 import styles from "./page.module.less"
 
@@ -16,6 +20,7 @@ const Toolbar = dynamic(() => import("@wangeditor/editor-for-react").then((mod) 
 })
 
 const EdictPage = () => {
+  const router = useRouter()
   const { toast } = useToast()
   // editor 实例
   const [editor, setEditor] = useState<IDomEditor | null>(null)
@@ -23,6 +28,14 @@ const EdictPage = () => {
   const [html, setHtml] = useState("")
   // 文章标题
   const [title, setTitle] = useState("")
+  // 文章设置数据
+  const [articleSettings, setArticleSettings] = useState({
+    bgPicture: "",
+    category: "",
+    tags: [] as string[],
+  })
+  // API 上下文
+  const api = useApi()
 
   // 工具栏配置
   const toolbarConfig: Partial<IToolbarConfig> = {}
@@ -33,7 +46,7 @@ const EdictPage = () => {
     MENU_CONF: {
       uploadImage: {
         // 后端上传接口地址
-        server: "http://127.0.0.1:5173/api/v1/upload/image",
+        server: "/upload/image",
         // 对应后端接口的字段名
         fieldName: "file",
         // 自定义上传逻辑
@@ -42,12 +55,9 @@ const EdictPage = () => {
           formData.append("file", file)
 
           try {
-            const response = await fetch("http://127.0.0.1:5173/api/upload/image", {
-              method: "POST",
-              body: formData,
-            })
+            const response = await http.post<{ url: string; message: string }>("/upload/image", formData)
 
-            const result = await response.json()
+            const result = await response
             if (result.url) {
               // 插入图片到编辑器：url, alt, href
               insertFn(result.url, file.name, result.url)
@@ -81,7 +91,7 @@ const EdictPage = () => {
   }, [editor])
 
   // 保存逻辑
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!title.trim()) {
       toast({
         variant: "destructive",
@@ -102,15 +112,26 @@ const EdictPage = () => {
     const articleData = {
       title,
       content: html,
-      saveTime: new Date().toLocaleString(),
+      ...articleSettings,
     }
 
-    console.log("保存文章数据:", articleData)
-    toast({
-      title: "保存成功",
-      description: "文章已保存！请查看控制台。",
+    try {
+      await api.article.saveArticle(articleData)
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "保存出错",
+        description: "请检查网络服务",
+      })
+    }
+    setTitle("")
+    setHtml("")
+    setArticleSettings({
+      bgPicture: "",
+      category: "",
+      tags: [],
     })
-    // 这里可以接入后端 API 进行保存
+    router.push("/posts")
   }
 
   return (
@@ -152,6 +173,9 @@ const EdictPage = () => {
             mode="default"
             style={{ minHeight: "800px" }}
           />
+        </div>
+        <div className={styles.sideWrapper}>
+          <ArticleDescCard onDataChange={setArticleSettings} />
         </div>
       </div>
     </div>

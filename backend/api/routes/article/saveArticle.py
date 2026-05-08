@@ -36,9 +36,8 @@ async def save_article(request_data: ArticleSaveRequest, user=Depends(jwt_auth_d
         "category": request_data.category,
         "is_new": True,
         "bgPicture": request_data.bgPicture,
-        "published": request_data.published,
-        "comment": 0,
-        "author": user.get("username")
+        "state": "takeoff",
+        "comment": 0,   
     }
 
     # 3. 追加并保存

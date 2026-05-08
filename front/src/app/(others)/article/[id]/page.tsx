@@ -1,30 +1,29 @@
 "use client"
 
-import React from "react"
+import React, { use, useEffect, useState } from "react"
 import { Calendar, RefreshCw, FileText, Clock, Eye, MapPin, MessageSquare, ArrowLeft } from "lucide-react"
 import { useRouter } from "next/navigation"
-import Footer from "@/components/home/footer"
 import "@wangeditor/editor/dist/css/style.css"
+import Footer from "@/components/home/footer"
+import { useApi } from "@/hooks/api-context"
+import { type ArticleItem } from "@/lib/api/article"
 import styles from "./page.module.less"
 
-const ArticleDetailPage = () => {
+const ArticleDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
   const router = useRouter()
-  // 模拟文章数据
-  const articleData = {
-    title: "科学上网完整教程",
-    publishDate: "2023-11-07",
-    updateDate: "2025-11-26",
-    tags: ["#精选", "#热门", "#网络代理", "#代理软件"],
-    stats: {
-      wordCount: 940,
-      readingTime: "2分钟",
-      views: 218,
-      location: "日本 东京",
-      comments: 0,
-    },
-    content:
-      '<h1><span style="color: rgb(196, 29, 127); font-size: 40px;"><strong>科学上网</strong></span></h1><ul><li>什么是科学上网</li><li>如何进行科学上网</li></ul><p style="text-align: center;"><img src="https://img.shetu66.com/2023/07/04/1688453332868636.png" alt="12" data-href="https://img.shetu66.com/2023/07/04/1688453332868636.png" style="width: 486.00px;height: 272.42px;"></p>',
+  const { id } = use(params)
+  const [article, setArticle] = useState<ArticleItem | undefined>()
+  const api = useApi()
+
+  const fetchArticle = async () => {
+    const response = await api.article.getArticleDetail(id)
+    setArticle(response)
   }
+
+  useEffect(() => {
+    fetchArticle()
+  }, [id])
+
   return (
     <div className={styles.detailPage}>
       {/* 顶部文章信息区域 */}
@@ -38,36 +37,34 @@ const ArticleDetailPage = () => {
           <div className={styles.tags}>
             <span className={`${styles.tag} ${styles.original}`}>原创</span>
             <span className={`${styles.tag} ${styles.tutorial}`}>教程</span>
-            {articleData.tags.map((tag, index) => (
+            {article?.tags.map((tag, index) => (
               <span key={index} className={styles.tag}>
                 {tag}
               </span>
             ))}
           </div>
 
-          <h1 className={styles.title}>{articleData.title}</h1>
+          <h1 className={styles.title}>{article?.title}</h1>
 
           <div className={styles.meta}>
+            <div className={styles.metaItem}></div>
             <div className={styles.metaItem}>
-              <Calendar /> 发表于 {articleData.publishDate}
+              <RefreshCw /> 更新于 {article?.created_at}
             </div>
             <div className={styles.metaItem}>
-              <RefreshCw /> 更新于 {articleData.updateDate}
+              <FileText /> 字数总计: {article?.wordCount || 0}
             </div>
             <div className={styles.metaItem}>
-              <FileText /> 字数总计: {articleData.stats.wordCount}
+              <Clock /> 阅读时长: {article?.readingTime || "5分钟"}
             </div>
             <div className={styles.metaItem}>
-              <Clock /> 阅读时长: {articleData.stats.readingTime}
+              <Eye /> 阅读量: {article?.views || 0}
             </div>
             <div className={styles.metaItem}>
-              <Eye /> 阅读量: {articleData.stats.views}
+              <MapPin /> {article?.location || "未知"}
             </div>
             <div className={styles.metaItem}>
-              <MapPin /> {articleData.stats.location}
-            </div>
-            <div className={styles.metaItem}>
-              <MessageSquare /> 评论数: {articleData.stats.comments}
+              <MessageSquare /> 评论数: {article?.comment || 0}
             </div>
           </div>
         </div>
@@ -98,7 +95,7 @@ const ArticleDetailPage = () => {
         <div className={styles.contentCard}>
           <div
             className={`${styles.articleBody} w-e-text-container`}
-            dangerouslySetInnerHTML={{ __html: articleData.content }}
+            dangerouslySetInnerHTML={{ __html: article?.content || "" }}
           />
         </div>
       </main>

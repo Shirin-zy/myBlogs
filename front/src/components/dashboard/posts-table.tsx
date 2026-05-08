@@ -81,7 +81,7 @@ export function PostsTable() {
               <TableRow
                 key={post.id}
                 onClick={() => {
-                  router.push(`/article/detial`)
+                  router.push(`/article/${post.id}`)
                 }}
                 className="cursor-pointer"
               >

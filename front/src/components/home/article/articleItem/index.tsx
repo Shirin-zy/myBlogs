@@ -2,12 +2,15 @@
 
 import styles from "./index.module.less"
 import { MessageCircle } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { type ArticleItem as ArticleProps } from "@/lib/api/article"
 
 const ArticleItem = (props: ArticleProps) => {
     const { id, title, created_at, tags, category, is_new, bgPicture, comment } = props
+    const router = useRouter()
+
     return (
-        <div className={styles.card}>
+        <div className={styles.card} onClick={() => router.push(`/article/${id}`)}>
             <div className={styles.cover}>
                 <div className={styles.tag}>{category}</div>
                 <img src={bgPicture} alt="cover" />
