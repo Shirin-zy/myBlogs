@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import os
+from config import HOST, PORT, UPLOAD_DIR
 
 from api.routes import base_router, auth_router, article_router, llm_router
 
@@ -32,4 +33,4 @@ app.include_router(llm_router, prefix="/api")
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=5173)
+    uvicorn.run(app, host=HOST, port=PORT)

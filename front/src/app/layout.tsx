@@ -1,17 +1,14 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import './globals.css'
-import { ThemeProvider } from '@/components/providers/theme-provider'
-import { ThemeScopeGuard } from '@/components/providers/theme-scope-guard'
-import { AppStoreProvider } from '@/hooks/store/app-store'
-import { ApiProvider } from '@/hooks/api-context'
-import { Toaster } from '@/components/ui/toaster'
-
-const inter = Inter({ subsets: ['latin'] })
+import type { Metadata } from "next"
+import "./globals.css"
+import { ThemeProvider } from "@/components/providers/theme-provider"
+import { ThemeScopeGuard } from "@/components/providers/theme-scope-guard"
+import { AppStoreProvider } from "@/hooks/store/app-store"
+import { ApiProvider } from "@/hooks/api-context"
+import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
-  title: 'OSS Manager - 对象存储管理系统',
-  description: '高效、易用的 OSS 对象存储 Web 端管理界面',
+  title: "OSS Manager - 对象存储管理系统",
+  description: "高效、易用的 OSS 对象存储 Web 端管理界面",
 }
 
 /**
@@ -27,11 +24,7 @@ export const metadata: Metadata = {
  * 2. ThemeScopeGuard — 在客户端路由切换后检测 pathname，
  *    强制 setTheme('light') 同步 html class，防止 Next.js SPA 导航后主题残留
  */
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-CN" suppressHydrationWarning>
       <head>
@@ -51,13 +44,8 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+      <body>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <ThemeScopeGuard>
             <AppStoreProvider>
               <ApiProvider>

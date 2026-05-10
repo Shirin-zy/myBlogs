@@ -173,7 +173,7 @@ export const createArticleApi = (client: HttpClient): ArticleApi => {
     },
     async updateArticleState(id, state) {
       try {
-        const response = await client.post<any>(UPDATE_ARTICLE_STATUS_API_URL, { id, state })
+        const response = await client.post<{ code: number; message: string }>(UPDATE_ARTICLE_STATUS_API_URL, { id, state })
         if (response.code !== 0 && response.code !== 200) {
           throw new ApiError({
             status: 500,

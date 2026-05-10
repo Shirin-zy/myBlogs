@@ -46,7 +46,9 @@
 
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
   }
 }
 
@@ -100,18 +102,24 @@
 /* 隐藏滚动条：挂载在 html 上，供 (home) layout 按需使用 */
 html.hide-scrollbar,
 html.hide-scrollbar body {
-  scrollbar-width: none;       /* Firefox */
-  -ms-overflow-style: none;    /* IE / Edge Legacy */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE / Edge Legacy */
 }
 html.hide-scrollbar ::-webkit-scrollbar,
 html.hide-scrollbar body::-webkit-scrollbar {
-  display: none;               /* Chrome / Safari / Edge */
+  display: none; /* Chrome / Safari / Edge */
 }
 
 /* 淡入动画 */
 @keyframes fade-in {
-  from { opacity: 0; transform: translateY(4px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 .animate-fade-in {
   animation: fade-in 0.2s ease-out;
