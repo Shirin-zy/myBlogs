@@ -162,10 +162,75 @@
         color: #333;
         font-size: 17px;
 
-        // 优化图片居中逻辑，并确保不与 wangEditor 冲突
+        // 优化内容渲染，恢复 wangEditor 和基础 HTML 样式
         :global {
+          // 列表样式恢复
+          ul {
+            list-style-type: disc !important;
+            padding-left: 2em !important;
+            margin-bottom: 1.5em !important;
+
+            li {
+              list-style-type: disc !important;
+              display: list-item !important;
+            }
+          }
+
+          ol {
+            list-style-type: decimal !important;
+            padding-left: 2em !important;
+            margin-bottom: 1.5em !important;
+
+            li {
+              list-style-type: decimal !important;
+              display: list-item !important;
+            }
+          }
+
+          // 表格样式恢复
+          table {
+            border-collapse: collapse !important;
+            width: 100% !important;
+            margin-bottom: 1.5em !important;
+            border: 1px solid #ddd !important;
+
+            th,
+            td {
+              border: 1px solid #ddd !important;
+              padding: 10px !important;
+              text-align: left !important;
+            }
+
+            th {
+              background-color: #f9f9f9 !important;
+              font-weight: bold !important;
+            }
+          }
+
+          // 引用块样式
+          blockquote {
+            border-left: 4px solid #dfe2e5 !important;
+            color: #6a737d !important;
+            padding-left: 1em !important;
+            margin-left: 0 !important;
+            margin-bottom: 1.5em !important;
+          }
+
+          // 标题样式优化
+          h1,
+          h2,
+          h3,
+          h4,
+          h5,
+          h6 {
+            margin-top: 1.5em !important;
+            margin-bottom: 0.8em !important;
+            font-weight: bold !important;
+            line-height: 1.25 !important;
+          }
+
           .w-e-text-container {
-            border: none !important; // 移除编辑器默认边框
+            border: none !important;
             padding: 0 !important;
           }
 
@@ -174,10 +239,9 @@
             height: auto;
             border-radius: 8px;
             margin: 20px auto;
-            display: block; // 配合 margin: auto 实现居中
+            display: block;
           }
 
-          // 针对编辑器生成的居中 P 标签内的图片
           p[style*="text-align: center"] {
             img {
               display: inline-block;
@@ -185,13 +249,10 @@
             }
           }
 
-          // 基础文字排版优化
           p {
             margin-bottom: 1.5em;
             word-break: break-word;
           }
-
-          // 其他样式由引入的 @wangeditor/editor/dist/css/style.css 自动处理
         }
       }
     }

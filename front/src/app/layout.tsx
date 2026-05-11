@@ -7,8 +7,11 @@ import { ApiProvider } from "@/hooks/api-context"
 import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
-  title: "OSS Manager - 对象存储管理系统",
-  description: "高效、易用的 OSS 对象存储 Web 端管理界面",
+  title: "Blog - (●´ω｀●)ゞ ",
+  description: "这是一个基于 Next.js 的博客管理系统，支持文章发布、分类、标签、评论等功能。",
+  icons: {
+    icon: "/favicon.png",
+  },
 }
 
 /**

@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 // import Player from "@/components/videoPlayer/player"
 import style from "./page.module.less"
@@ -12,47 +12,47 @@ import UserInfoCard from "@/components/home/userInfoCard"
 import { useEffect, useState } from "react"
 
 const Home = () => {
-    const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true)
 
-    useEffect(() => {
-        const handleLoad = () => setLoading(false)
+  useEffect(() => {
+    const handleLoad = () => setLoading(false)
 
-        if (document.readyState === "complete") {
-            setLoading(false)
-        } else {
-            window.addEventListener("load", handleLoad)
-        }
+    if (document.readyState === "complete") {
+      setLoading(false)
+    } else {
+      window.addEventListener("load", handleLoad)
+    }
 
-        return () => window.removeEventListener("load", handleLoad)
-    }, [])
+    return () => window.removeEventListener("load", handleLoad)
+  }, [])
 
-    // if (loading) {
-    //     return (
-    //         <div className={style.loadingContainer}>
-    //             <Spin size="large" tip="Loading..." />
-    //         </div>
-    //     )
-    // }
+  // if (loading) {
+  //     return (
+  //         <div className={style.loadingContainer}>
+  //             <Spin size="large" tip="Loading..." />
+  //         </div>
+  //     )
+  // }
 
-    return (
-        <div className={style.bg}>
-            <Player videoSrc="https://fastcdn.mihoyo.com/content-v2/plat/100679/07eb4e7f8b897af4d6f6be9e54e5cbe8_763253631022293740.mp4" />
-            <div className={style.container}>
-                <WebMessage message="这是一个基于 React 的项目，用于测试使用" />
-                <HeaderInfo />
-                <div className={style.content}>
-                    <Article />
-                    <div className={style.side}>
-                        <UserInfoCard width={350} />
-                        {/* 粘性侧边栏，实现智能吸附效果 */}
-                        <div className={style.stickyWrapper}>
-                            <SiteInfoCard />
-                        </div>
-                    </div>
-                </div>
+  return (
+    <div className={style.bg}>
+      <Player videoSrc="https://fastcdn.mihoyo.com/content-v2/plat/100679/07eb4e7f8b897af4d6f6be9e54e5cbe8_763253631022293740.mp4" />
+      <div className={style.container}>
+        <WebMessage message="本博客是一个基于 Next.js 框架，仅用于学习使用，不涉及任何商业用途，若设计问题请联系管理员。" />
+        <HeaderInfo />
+        <div className={style.content}>
+          <Article />
+          <div className={style.side}>
+            <UserInfoCard width={350} />
+            {/* 粘性侧边栏，实现智能吸附效果 */}
+            <div className={style.stickyWrapper}>
+              <SiteInfoCard />
             </div>
+          </div>
         </div>
-    )
+      </div>
+    </div>
+  )
 }
 
 export default Home
