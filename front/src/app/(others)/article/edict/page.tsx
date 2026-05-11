@@ -82,7 +82,10 @@ const EdictContent = () => {
           formData.append("file", file)
 
           try {
-            const response = await http.post<{ url: string; message: string }>("/upload/image", formData)
+            const response = await http.post<{ url: string; message: string }>(
+              "http://47.108.73.254/api/upload/image",
+              formData,
+            )
 
             const result = await response
             if (result.url) {

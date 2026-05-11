@@ -1,42 +1,38 @@
-import json
-import os
+# 获取已发布文章列表
 from fastapi import APIRouter, Request, Depends
-from api.deps import jwt_auth_dependency
+from sqlalchemy.orm import Session
+from database import get_db
+from models.article import Article
 
 router = APIRouter(tags=["article"])
 
-MOCK_FILE = os.path.join("mock", "article.json")
 
 @router.get("/blogs/articleList")
-async def article_list(request: Request, user=Depends(jwt_auth_dependency)):
+async def article_list(request: Request, db: Session = Depends(get_db)):
     """
-    获取文章列表接口
-    从 mock/article.json 读取数据
+    获取已发布文章列表接口
+    从数据库读取数据
     """
     try:
-        if os.path.exists(MOCK_FILE):
-            with open(MOCK_FILE, "r", encoding="utf-8") as f:
-                mock_articles = json.load(f)
-        else:
-            mock_articles = []
-    except Exception as e:
-        mock_articles = []
+        # 过滤 state 为 published 的项
+        db_articles = db.query(Article).filter(Article.state == "published").all()
 
-    # 过滤 published 为 True 的项，并排除 published 和 content 字段
-    filtered_articles = []
-    for article in mock_articles:
-        if article.get("state") == "published":
-            # 创建副本并删除不需要的字段
-            article_data = article.copy()
+        filtered_articles = []
+        for article in db_articles:
+            # 转换为字典并排除 state 和 content 字段
+            article_data = article.to_dict()
             article_data.pop("state", None)
             article_data.pop("content", None)
             filtered_articles.append(article_data)
 
-    return {
-        "code": 200,
-        "message": f"用户 {user.get('username')} 获取文章列表成功",
-        "data": {
-            "total": len(filtered_articles),
-            "list": filtered_articles
+        return {
+            "code": 200,
+            "message": "获取已发布文章列表成功",
+            "data": {"total": len(filtered_articles), "list": filtered_articles},
         }
-    }
+    except Exception as e:
+        return {
+            "code": 500,
+            "message": f"获取文章列表失败: {str(e)}",
+            "data": {"total": 0, "list": []},
+        }

@@ -39,10 +39,11 @@
         ],
         "category": "热门",
         "is_new": true,
-        "bgPicture": "https://www.bing.com/th?id=OHR.WalesWinter_ZH-CN3692879767_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp&w=360&h=202",
+        "bgPicture": "http://127.0.0.1:5173/uploads/images/9f215fb6-b3df-4bf2-988e-8d0926acb1ae.jpg",
         "comment": 233,
         "state": "published",
-        "content": "微软 Rewards 积分，是微软 Rewards 官方提供的积分，用于兑换微软的礼品。"
+        "content": "<p>微软 Rewards 积分，是微软 Rewards 官方提供的积分，用于兑换微软的礼品。</p>",
+        "updated_at": "2026-05-11 11:21:44"
     },
     {
         "id": "2",

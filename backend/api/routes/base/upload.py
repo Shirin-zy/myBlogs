@@ -1,7 +1,6 @@
 import os
 import uuid
 from fastapi import APIRouter, UploadFile, File, HTTPException
-from fastapi.responses import JSONResponse
 from config import BASE_URL, IMAGES_DIR
 
 router = APIRouter(prefix="/upload", tags=["upload"])
@@ -14,12 +13,13 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 # 允许的图片类型
 ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
 
+
 @router.post("/image")
 async def upload_image(file: UploadFile = File(...)):
     # 1. 获取并检查文件后缀
     filename = file.filename
     extension = os.path.splitext(filename)[1].lower()
-    
+
     if extension not in ALLOWED_EXTENSIONS:
         raise HTTPException(status_code=400, detail="不支持的文件格式")
 
@@ -37,9 +37,6 @@ async def upload_image(file: UploadFile = File(...)):
 
     # 4. 返回图片访问 URL
     # 动态使用配置中的 BASE_URL
-    file_url = f"{BASE_URL}/uploads/images/{unique_filename}"
-    
-    return {
-        "url": file_url,
-        "message": "上传成功"
-    }
+    file_url = f"{BASE_URL}/images/{unique_filename}"
+
+    return {"url": file_url, "message": "上传成功"}

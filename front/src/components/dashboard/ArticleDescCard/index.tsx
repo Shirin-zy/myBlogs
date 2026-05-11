@@ -46,7 +46,10 @@ const ArticleDescCard: React.FC<ArticleDescCardProps> = ({ initialData, onDataCh
     const formData = new FormData()
     formData.append("file", file)
     try {
-      const result = await http.post<{ url: string; message: string }>("/upload/image", formData)
+      const result = await http.post<{ url: string; message: string }>(
+        "http://47.108.73.254/api/upload/image",
+        formData,
+      )
       if (result.url) {
         setBgPicture(result.url)
         onDataChange?.({ bgPicture: result.url, category, tags })

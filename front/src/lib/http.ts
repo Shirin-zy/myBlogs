@@ -59,7 +59,10 @@ function buildQueryString(params: Record<string, any>): string {
 async function request<T>(method: HttpMethod, path: string, config: RequestConfig = {}): Promise<T> {
   const { params, ...rest } = config
   const queryString = params ? buildQueryString(params) : ""
-  const url = `${API_BASE_URL}${path}${queryString}`
+
+  // 判断是否是完整路径
+  const isAbsoluteUrl = path.startsWith("http://") || path.startsWith("https://")
+  const url = isAbsoluteUrl ? `${path}${queryString}` : `${API_BASE_URL}${path}${queryString}`
 
   const isFormData = rest.body instanceof FormData
 

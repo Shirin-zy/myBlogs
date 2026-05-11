@@ -4,6 +4,8 @@ python-multipart
 PyJWT
 openai
 python-dotenv
+sqlalchemy
+pymysql
 # django (kept for reference or if needed for some utilities, but eventually can be removed)
 django
 djangorestframework

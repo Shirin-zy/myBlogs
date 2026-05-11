@@ -15,3 +15,13 @@ BASE_URL = os.getenv("BASE_URL", f"http://127.0.0.1:{PORT}")
 # 上传目录配置
 UPLOAD_DIR = "uploads"
 IMAGES_DIR = os.path.join(UPLOAD_DIR, "images")
+
+# 数据库配置
+DB_HOST = os.getenv("DB_HOST", "47.108.73.254")
+DB_PORT = int(os.getenv("DB_PORT", "3306"))
+DB_USER = os.getenv("DB_USER", "root")
+DB_PASSWORD = os.getenv("DB_PASSWORD", "")
+DB_NAME = os.getenv("DB_NAME", "myblog")
+
+# SQLAlchemy 连接字符串
+DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
