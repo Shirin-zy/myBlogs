@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect, useCallback } from "react"
+import React, { useState, useEffect, useCallback, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import TagCloud from "@/components/home/tags/TagCloud"
 import TagArticleList from "@/components/home/tags/TagArticleList"
@@ -13,7 +13,7 @@ import Loader from "@/components/others/loading"
 import bgImg from "@/assets/02.jpg"
 import styles from "./page.module.less"
 
-export default function TagsPage() {
+function TagsContent() {
   const { article } = useApi()
   const searchParams = useSearchParams()
   const tagParam = searchParams.get("tag")
@@ -159,5 +159,19 @@ export default function TagsPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function TagsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className={styles.loaderContainer}>
+          <Loader />
+        </div>
+      }
+    >
+      <TagsContent />
+    </Suspense>
   )
 }
