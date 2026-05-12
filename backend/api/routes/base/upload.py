@@ -1,7 +1,7 @@
 import os
 import uuid
 from fastapi import APIRouter, UploadFile, File, HTTPException
-from config import BASE_URL, IMAGES_DIR
+from config import IMAGES_DIR
 
 router = APIRouter(prefix="/upload", tags=["upload"])
 
@@ -37,6 +37,6 @@ async def upload_image(file: UploadFile = File(...)):
 
     # 4. 返回图片访问 URL
     # 动态使用配置中的 BASE_URL
-    file_url = f"{BASE_URL}/images/{unique_filename}"
+    file_url = f"http://47.108.73.254/images/{unique_filename}"
 
     return {"url": file_url, "message": "上传成功"}

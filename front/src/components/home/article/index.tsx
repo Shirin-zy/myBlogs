@@ -1,62 +1,58 @@
-'use client'
+"use client"
 
 import styles from "./index.module.less"
 import { type ArticleItem as ArticleProps } from "@/lib/api/article"
 import ArticleItem from "./articleItem/index"
 import { useState, useEffect } from "react"
 import { useApi } from "@/hooks/api-context"
-import { http } from "@/lib/http"
 
 interface FilterProps {
-    categorys: { name: string; type: string }[]
+  categorys: { name: string; type: string }[]
 }
 
 const Filter = (props: FilterProps) => {
-    const { categorys } = props
-    return (
-        <div className={styles.category}>
-            {categorys.map((item) => (
-                <div key={item.type} className={styles.categoryItem}>
-                    {item.name}
-                </div>
-            ))}
+  const { categorys } = props
+  return (
+    <div className={styles.category}>
+      {categorys.map((item) => (
+        <div key={item.type} className={styles.categoryItem}>
+          {item.name}
         </div>
-    )
+      ))}
+    </div>
+  )
 }
 
-
 const Article = () => {
-    const [articles, setArticles] = useState<ArticleProps[]>([])
-    const { article } = useApi()
-    const getArticles = async () => {
-        try {
-            const data = await article.getArticles()
-            setArticles(data.list || [])
-        } catch (error) {
-            console.error('获取文章列表失败:', error)
-        }
+  const [articles, setArticles] = useState<ArticleProps[]>([])
+  const { article } = useApi()
+  const getArticles = async () => {
+    try {
+      const data = await article.getArticles()
+      setArticles(data.list || [])
+    } catch (error) {
+      console.error("获取文章列表失败:", error)
     }
-    useEffect(() => {
-        getArticles()
-    }, [])
+  }
+  useEffect(() => {
+    getArticles()
+  }, [])
 
-    const category = [
-        { name: "全部", type: "all" },
-        { name: "热门", type: "1" },
-        { name: "最新", type: "2" },
-        { name: "杂项", type: "3" },
-        { name: ">> 更多", type: "more" },
-    ]
+  const category = [
+    { name: "全部", type: "all" },
+    { name: "热门", type: "1" },
+    { name: "最新", type: "2" },
+    { name: "杂项", type: "3" },
+    { name: ">> 更多", type: "more" },
+  ]
 
-    return (
-        <div className={styles.content}>
-            <Filter categorys={category} />
-            <div className={styles.article}>
-                {articles.length > 0 && articles.map((item) => (
-                    <ArticleItem key={item.id} {...item} />
-                ))}
-            </div>
-        </div>
-    )
+  return (
+    <div className={styles.content}>
+      <Filter categorys={category} />
+      <div className={styles.article}>
+        {articles.length > 0 && articles.map((item) => <ArticleItem key={item.id} {...item} />)}
+      </div>
+    </div>
+  )
 }
 export default Article

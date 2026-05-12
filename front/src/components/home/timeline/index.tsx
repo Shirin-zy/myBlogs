@@ -13,7 +13,7 @@ interface TimelineProps {
   subtitle?: string
 }
 
-const Timeline: React.FC<TimelineProps> = ({ archives, mainTitle = "时间线归档", subtitle = "MEMORIES" }) => {
+const Timeline: React.FC<TimelineProps> = ({ archives, mainTitle = "文章时间线归档", subtitle = "MEMORIES" }) => {
   const api = useApi()
   const [archive, setArchive] = useState<AarchiveItem[]>([])
   const router = useRouter()
