@@ -1,21 +1,21 @@
-'use client'
+"use client"
 
-import { createStore, type StoreApi, useStore } from "zustand";
-import { createContext, useContext, useRef, type ReactNode } from "react";
-import { loginApi, logoutApi } from "@/lib/api/auth-service";
+import { createStore, type StoreApi, useStore } from "zustand"
+import { createContext, useContext, useRef, type ReactNode } from "react"
+import { loginApi, logoutApi } from "@/lib/api/auth-service"
 
 /** Token Cookie 名称（与 middleware 保持一致） */
 interface AppStoreState {
-  user: string | null;
-  isLogin: boolean;
+  user: string | null
+  isLogin: boolean
 }
 
 interface AppStoreAction {
-  login: (username: string, password: string) => void;
-  logout: () => void;
+  login: (email: string, password: string) => void
+  logout: () => void
 }
 
-type AppStore = AppStoreState & AppStoreAction;
+type AppStore = AppStoreState & AppStoreAction
 
 /**
  * 管理员认证状态 Store
@@ -27,27 +27,27 @@ const createAppStore = (): StoreApi<AppStore> =>
   createStore<AppStore>()((set, get) => ({
     user: null,
     isLogin: false,
-    login: async (username: string, password: string) => {
+    login: async (email: string, password: string) => {
       try {
-        const res = await loginApi({ username, password });
-        const { user_info } = res.data;
-        set({ user: user_info.user_id, isLogin: true });
+        const res = await loginApi({ email, password })
+        const { user_info } = res.data
+        set({ user: user_info.user_id, isLogin: true })
       } catch (error) {
-        set({ isLogin: false });
-        throw error;
+        set({ isLogin: false })
+        throw error
       }
     },
     logout: async () => {
       try {
-        await logoutApi();
-        set({ user: null, isLogin: false });
+        await logoutApi()
+        set({ user: null, isLogin: false })
       } catch (error) {
-        throw error;
+        throw error
       }
     },
-  }));
+  }))
 
-const AppStoreContext = createContext<StoreApi<AppStore> | null>(null);
+const AppStoreContext = createContext<StoreApi<AppStore> | null>(null)
 
 // 提供 AppStore 上下文的组件
 export const AppStoreProvider = ({ children }: { children: ReactNode }) => {
@@ -75,10 +75,7 @@ export const useAppStore = <T,>(selector: (state: AppStore) => T): T => {
 
 export const useAppStoreActions = () => {
   const store = useAppStoreContext()
-  const {
-    login,
-    logout,
-  } = store.getState()
+  const { login, logout } = store.getState()
   return {
     login,
     logout,

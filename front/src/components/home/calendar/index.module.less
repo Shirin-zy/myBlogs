@@ -1,0 +1,128 @@
+.shell {
+  position: relative;
+  box-shadow:
+    0 19px 38px rgba(0, 0, 0, 0.2),
+    0 15px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 1em;
+  font-family: sans-serif;
+  overflow: visible; // 允许 ring 溢出显示
+
+  header {
+    border-radius: 1em 1em 0 0;
+    background: #e66b6b;
+    color: #fff;
+    padding: 3em 2em;
+    background-size: cover;
+    background-position: center;
+    text-align: left;
+  }
+
+  .day {
+    font-size: 8em;
+    font-weight: 900;
+    line-height: 1em;
+  }
+
+  .month {
+    font-size: 4em;
+    line-height: 1em;
+    text-transform: lowercase;
+  }
+}
+
+.calendar {
+  width: 100%;
+  background: #fff;
+  border-radius: 0 0 1em 1em;
+  color: #000;
+  padding: 20px;
+  border-collapse: collapse;
+  table-layout: fixed;
+
+  thead {
+    color: #e66b6b;
+    font-weight: 700;
+    text-transform: uppercase;
+
+    th {
+      padding: 20px 0;
+      font-size: 0.8em;
+    }
+  }
+
+  tbody {
+    td {
+      padding: 0; // 移除 padding
+      height: 48px; // 固定高度，与 index.tsx 中的 grid 保持平衡
+      border-radius: 50%;
+      text-align: center;
+      font: 600 17px sans-serif;
+      transition: 0.2s;
+      cursor: pointer;
+      position: relative;
+      vertical-align: middle;
+
+      &:hover {
+        background: #e66b6b;
+        color: #fff !important; // 强制变白，修复当前日期 hover 颜色问题
+        font-size: 23px;
+      }
+
+      &.currentDay {
+        color: #e66b6b;
+        font-weight: 800;
+      }
+
+      &.prevMonth,
+      &.nextMonth {
+        color: #cacaca;
+      }
+    }
+  }
+}
+
+.ringLeft,
+.ringRight {
+  position: absolute;
+  top: 265px; // 根据 header 高度微调
+  z-index: 2;
+}
+
+.ringLeft {
+  left: 2em;
+}
+
+.ringRight {
+  right: 2em;
+}
+
+.ringLeft::before,
+.ringRight::before {
+  background: #fff;
+  border-radius: 4px;
+  box-shadow:
+    0 3px 1px rgba(0, 0, 0, 0.3),
+    0 -1px 1px rgba(0, 0, 0, 0.2);
+  content: "";
+  display: inline-block;
+  margin: 8px;
+  height: 32px;
+  width: 8px;
+}
+
+// 响应式自适应
+@media (max-width: 600px) {
+  .shell {
+    .day {
+      font-size: 5em;
+    }
+    .month {
+      font-size: 2.5em;
+    }
+  }
+  .calendar {
+    tbody td {
+      font-size: 14px;
+    }
+  }
+}

@@ -62,14 +62,34 @@ interface AarchiveBackendResponse {
   message: string
   data: AarchiveItem[]
 }
+
+interface getArticlesPayload {
+  page?: number
+  limit?: number
+  tag?: string
+  category?: string
+}
+
+export interface Tag {
+  name: string
+  count: number
+}
+
+interface tagsSummaryBackendResponse {
+  code: number
+  message: string
+  data: Tag[]
+}
+
 export interface ArticleApi {
-  getArticles: () => Promise<ArticleResponse>
+  getArticles: (params?: getArticlesPayload) => Promise<ArticleResponse>
   getAllArticles: () => Promise<ArticleResponse>
   saveArticle: (payload: saveArticlePayload) => Promise<saveArticleResponse>
   getArticleDetail: (id: string) => Promise<ArticleItem & { content: string }>
   deleteArticle: (id: string) => Promise<void>
   updateArticleState: (id: string, state: "published" | "draft" | "takeoff") => Promise<void>
   getArchive: () => Promise<AarchiveItem[]>
+  getTagsSummary: () => Promise<Tag[]>
 }
 
 const PUBLISHED_ARTICLE_API_URL = "/blogs/articleList"
@@ -79,12 +99,13 @@ const DELETE_ARTICLE_API_URL = "/delete"
 const ARTICLE_DETAIL_API_URL = "/articleDetail"
 const UPDATE_ARTICLE_STATUS_API_URL = "/updateStatus"
 const ARCHIVE_API_URL = "/archive"
+const TAGS_API_URL = "/tagSummary"
 
 export const createArticleApi = (client: HttpClient): ArticleApi => {
   return {
-    async getArticles() {
+    async getArticles(params?: getArticlesPayload) {
       try {
-        const response = await client.get<ArticleBackendResponse>(PUBLISHED_ARTICLE_API_URL)
+        const response = await client.get<ArticleBackendResponse>(PUBLISHED_ARTICLE_API_URL, { params })
         console.log("获取文章列表成功:", response)
         if (!response.data || (response.code !== 0 && response.code !== 200)) {
           throw new ApiError({
@@ -213,6 +234,27 @@ export const createArticleApi = (client: HttpClient): ArticleApi => {
     async getArchive() {
       try {
         const response = await client.get<AarchiveBackendResponse>(ARCHIVE_API_URL)
+        if (response.code !== 0 && response.code !== 200) {
+          throw new ApiError({
+            status: 500,
+            message: response.message || "Failed to update article status",
+            code: String(response.code),
+            details: response,
+          })
+        }
+        return response.data || []
+      } catch (error) {
+        throw new ApiError({
+          status: 500,
+          message: "Failed to load archive items",
+          code: String(500),
+          details: error,
+        })
+      }
+    },
+    async getTagsSummary() {
+      try {
+        const response = await client.get<tagsSummaryBackendResponse>(TAGS_API_URL)
         if (response.code !== 0 && response.code !== 200) {
           throw new ApiError({
             status: 500,

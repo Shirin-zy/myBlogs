@@ -2,6 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
+  compiler: {
+    styledComponents: true,
+  },
   eslint: {
     // 忽略打包时的 eslint 错误，确保能顺利部署
     ignoreDuringBuilds: true,

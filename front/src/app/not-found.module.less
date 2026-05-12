@@ -1,0 +1,134 @@
+.notFoundContainer {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background-color: #f8fafc;
+}
+
+.card404 {
+  background: #fff;
+  border-radius: 16px;
+  padding: 40px 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 60px;
+  max-width: 1000px;
+  width: 100%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  margin-bottom: 60px;
+  border: 1px solid #f1f5f9;
+}
+
+.imageSection {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+
+  img {
+    max-width: 320px;
+    height: auto;
+    object-fit: contain;
+  }
+}
+
+.textSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  h1 {
+    font-size: 140px;
+    font-weight: 900;
+    color: #1e293b;
+    margin: 0;
+    line-height: 1;
+    letter-spacing: -4px;
+  }
+
+  p {
+    font-size: 20px;
+    color: #475569;
+    margin: 10px 0 32px;
+    font-weight: 500;
+  }
+
+  .homeButton {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #5865f2; // More similar to the image's blue
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    border: none;
+
+    &:hover {
+      opacity: 0.9;
+    }
+
+    .icon {
+      width: 18px;
+      height: 18px;
+    }
+  }
+}
+
+.recommendSection {
+  max-width: 1200px;
+  width: 100%;
+  margin-top: 20px;
+
+  .sectionTitle {
+    font-size: 28px;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-left: 4px;
+
+    &::before {
+      content: "";
+      width: 6px;
+      height: 28px;
+      background-color: #5865f2;
+      border-radius: 3px;
+    }
+  }
+
+  .articleGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .card404 {
+    flex-direction: column;
+    padding: 40px 20px;
+    gap: 40px;
+    text-align: center;
+  }
+
+  .imageSection {
+    justify-content: center;
+  }
+
+  .textSection {
+    align-items: center;
+
+    h1 {
+      font-size: 80px;
+    }
+  }
+}

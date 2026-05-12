@@ -5,6 +5,8 @@ from .saveArticle import router as save_router
 from .articleDetail import router as detail_router
 from .deleteArticle import router as delete_router
 from .updateStatus import router as update_status_router
+from .archive import router as archive_router
+from .tagsSummary import router as tag_stats_router
 
 router = APIRouter()
 router.include_router(all_article_router)
@@ -13,3 +15,5 @@ router.include_router(save_router)
 router.include_router(detail_router)
 router.include_router(delete_router)
 router.include_router(update_status_router)
+router.include_router(archive_router)
+router.include_router(tag_stats_router)
