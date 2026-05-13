@@ -21,5 +21,5 @@ http://47.108.73.254/home
 ### 技术栈
 
 - Python
-- Django
+- FastApi
 - MySQL
