@@ -9,6 +9,12 @@
     border: 1px solid #c6d5fc;
     background-color: #fff;
     cursor: pointer;
+
+    @media (max-width: 600px) {
+      height: auto;
+      padding: 10px 0;
+    }
+
     .message {
       display: flex;
       line-height: 50px;
@@ -17,6 +23,13 @@
       font-weight: bold;
       justify-content: center;
       color: #363636bb;
+
+      @media (max-width: 600px) {
+        line-height: 1.5;
+        padding: 0 15px;
+        font-size: 14px;
+        text-align: center;
+      }
     }
 
     &:hover {

@@ -69,6 +69,7 @@ const Article = () => {
       getArticles(currentPage)
     } else if (currentCategory === "more") {
       router.push("/more")
+      return
     } else {
       getArticles(currentPage, currentCategory)
     }

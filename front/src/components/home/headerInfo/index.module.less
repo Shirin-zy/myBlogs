@@ -5,17 +5,33 @@
   justify-content: space-between;
   gap: 15px;
   padding-top: 20px;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+  }
+
   .left {
     flex: 7;
     display: flex;
     flex-direction: column;
     gap: 15px;
+
+    @media (max-width: 600px) {
+      flex: none;
+      width: 100%;
+    }
+
     .category {
       height: 80px;
       display: flex;
       flex-direction: row;
       justify-content: space-between;
       gap: 15px;
+
+      @media (max-width: 600px) {
+        flex-direction: column;
+        height: auto;
+      }
 
       .item {
         flex: 1;
@@ -33,8 +49,14 @@
         display: flex;
         align-items: center;
 
+        @media (max-width: 600px) {
+          height: 60px;
+          line-height: 60px;
+          font-size: 18px;
+        }
+
         &::after {
-          content: '';
+          content: "";
           position: absolute;
           right: -20px;
           top: 70%;
@@ -92,5 +114,12 @@
   }
   .right {
     flex: 5;
+
+    @media (max-width: 600px) {
+      flex: none;
+      width: 100%;
+      height: 250px; // Give it a fixed height on mobile
+      margin-top: 10px; // Add space between categories and recommend
+    }
   }
 }

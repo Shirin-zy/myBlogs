@@ -38,12 +38,12 @@ const Home = () => {
     <div className={style.bg}>
       <Player videoSrc="https://fastcdn.mihoyo.com/content-v2/plat/100679/07eb4e7f8b897af4d6f6be9e54e5cbe8_763253631022293740.mp4" />
       <div className={style.container}>
-        <WebMessage message="本博客是一个基于 Next.js 框架，仅用于学习使用，不涉及任何商业用途，若设计问题请联系管理员。" />
+        <WebMessage message="本博客是一个基于 Next.js 框架，仅用于学习使用，不涉及任何商业用途，若涉及问题请联系管理员。" />
         <HeaderInfo />
         <div className={style.content}>
           <Article />
           <div className={style.side}>
-            <UserInfoCard width={350} />
+            <UserInfoCard />
             {/* 粘性侧边栏，实现智能吸附效果 */}
             <div className={style.stickyWrapper}>
               <SiteInfoCard />
