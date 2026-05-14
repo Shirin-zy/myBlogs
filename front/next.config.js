@@ -26,7 +26,11 @@ const nextConfig = {
     ],
   },
   experimental: {
-    optimizePackageImports: ['lucide-react'],
+    optimizePackageImports: ["lucide-react"],
+    // 强制追踪并包含特定依赖，解决 standalone 模式下可能出现的软链接失效或模块缺失问题
+    outputFileTracingIncludes: {
+      "/**": ["./node_modules/styled-jsx/**/*", "./node_modules/next/**/*"],
+    },
   },
   webpack(config, { dev, isServer }) {
     // ── Less / Less Modules support ────────────────────────────
