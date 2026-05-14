@@ -43,11 +43,11 @@
   background-position: center center; /* 居中网格 */
   color: var(--color-foreground);
   // 隐藏滚动条（保留滚动能力）
-  scrollbar-width: none;       // Firefox
-  -ms-overflow-style: none;    // IE / Edge Legacy
+  scrollbar-width: none; // Firefox
+  -ms-overflow-style: none; // IE / Edge Legacy
 
   &::-webkit-scrollbar {
-    display: none;             // Chrome / Safari / Edge
+    display: none; // Chrome / Safari / Edge
   }
 }
 
@@ -64,7 +64,7 @@
 
   // 用伪元素承载底部分割线，单独控制 opacity 过渡，避免白线
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 0;
     left: 0;
@@ -168,15 +168,27 @@
   transform: translateX(0);
   transition: @nav-transition;
 
+  @media (max-width: 600px) {
+    display: none;
+  }
+
   li {
     opacity: 1;
     transform: translateY(0);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
-    &:nth-child(1) { transition-delay: 0.1s; }
-    &:nth-child(2) { transition-delay: 0.15s; }
-    &:nth-child(3) { transition-delay: 0.2s; }
-    &:nth-child(4) { transition-delay: 0.25s; }
+    &:nth-child(1) {
+      transition-delay: 0.1s;
+    }
+    &:nth-child(2) {
+      transition-delay: 0.15s;
+    }
+    &:nth-child(3) {
+      transition-delay: 0.2s;
+    }
+    &:nth-child(4) {
+      transition-delay: 0.25s;
+    }
   }
 }
 
@@ -193,7 +205,7 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 2px;
     left: 14px;

@@ -7,6 +7,7 @@ from config import HOST, PORT, UPLOAD_DIR
 from api.routes import base_router, auth_router, article_router, llm_router
 from database import engine, Base
 import models.article  # 导入模型以确保 Base 知道它们
+import models.toolset  # 导入模型以确保 Base 知道它们
 
 # 创建数据库表
 Base.metadata.create_all(bind=engine)

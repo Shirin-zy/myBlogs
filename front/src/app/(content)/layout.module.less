@@ -42,7 +42,7 @@
   background-size: 25px 25px; /* 调整网格大小 */
   background-position: center center; /* 居中网格 */
   color: var(--color-foreground);
-  
+
   // 默认滚动条
 }
 
@@ -63,7 +63,7 @@
 
   // 用伪元素承载底部分割线
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 0;
     left: 0;
@@ -141,6 +141,10 @@
   transform: translateX(0);
   transition: @nav-transition;
 
+  @media (max-width: 600px) {
+    display: none;
+  }
+
   li {
     opacity: 1;
     transform: translateY(0);
@@ -161,7 +165,7 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 2px;
     left: 14px;

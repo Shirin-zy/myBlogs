@@ -1,20 +1,21 @@
-'use client'
+"use client"
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { useState, useEffect, useCallback, useRef } from 'react'
-import { PenSquare, Menu, X, ArrowUp } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { debounce } from '@/lib/utils'
-import FloatButton from '@/components/home/floatButton'
-import AIChatCard from '@/components/home/aiChatCard'
-import Footer from '@/components/home/footer'
-import styles from './layout.module.less'
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { useState, useEffect, useCallback, useRef } from "react"
+import { PenSquare, Menu, X, ArrowUp } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { debounce } from "@/lib/utils"
+import FloatButton from "@/components/home/floatButton"
+import AIChatCard from "@/components/home/aiChatCard"
+import Footer from "@/components/home/footer"
+import styles from "./layout.module.less"
 
-const navLinks = [
-  { route: '/', label: '首页', key: 'home' },
-  { route: '/archive', label: '归档', key: 'archive' },
-  { route: '/login', label: '登录', key: 'login' },
+var navLinks = [
+  { route: "/home", label: "首页", key: "home" },
+  { route: "/archive", label: "归档", key: "archive" },
+  { route: "/toolset", label: "资源库", key: "toolset" },
+  { route: "/login", label: "登录", key: "login" },
 ]
 
 /**
@@ -42,14 +43,14 @@ export default function HomeGroupLayout({ children }: { children: React.ReactNod
 
   // ── 挂载时隐藏滚动条，卸载时恢复 ─────────────────────────
   useEffect(() => {
-    document.documentElement.classList.add('hide-scrollbar')
+    document.documentElement.classList.add("hide-scrollbar")
     return () => {
-      document.documentElement.classList.remove('hide-scrollbar')
+      document.documentElement.classList.remove("hide-scrollbar")
     }
   }, [])
 
   const openBiliBili = () => {
-    window.open('https://space.bilibili.com/39473070', '_blank')
+    window.open("https://space.bilibili.com/39473070", "_blank")
   }
 
   // ── 滚动监听 ──────────────────────────────────────────────
@@ -63,8 +64,8 @@ export default function HomeGroupLayout({ children }: { children: React.ReactNod
 
   useEffect(() => {
     const debouncedScroll = debounce(handleScroll, 16) // ~60fps
-    window.addEventListener('scroll', debouncedScroll, { passive: true })
-    return () => window.removeEventListener('scroll', debouncedScroll)
+    window.addEventListener("scroll", debouncedScroll, { passive: true })
+    return () => window.removeEventListener("scroll", debouncedScroll)
   }, [handleScroll])
 
   // ── 整屏滚动（仅在顶部区域生效）──────────────────────────
@@ -76,34 +77,42 @@ export default function HomeGroupLayout({ children }: { children: React.ReactNod
 
       // 位于最顶部向下滚 → 滚到第一屏底部
       if (scrollTop < 50 && direction === 1) {
-        if (isScrolling.current) { e.preventDefault(); return }
+        if (isScrolling.current) {
+          e.preventDefault()
+          return
+        }
         e.preventDefault()
         isScrolling.current = true
-        window.scrollTo({ top: windowHeight, behavior: 'smooth' })
-        setTimeout(() => { isScrolling.current = false }, 800)
+        window.scrollTo({ top: windowHeight, behavior: "smooth" })
+        setTimeout(() => {
+          isScrolling.current = false
+        }, 800)
         return
       }
 
       // 距离顶部恰好一屏高度时向上滚 → 回到顶部
       if (Math.abs(scrollTop - windowHeight) < 50 && direction === -1) {
-        if (isScrolling.current) { e.preventDefault(); return }
+        if (isScrolling.current) {
+          e.preventDefault()
+          return
+        }
         e.preventDefault()
         isScrolling.current = true
-        window.scrollTo({ top: 0, behavior: 'smooth' })
-        setTimeout(() => { isScrolling.current = false }, 800)
+        window.scrollTo({ top: 0, behavior: "smooth" })
+        setTimeout(() => {
+          isScrolling.current = false
+        }, 800)
         return
       }
     }
 
-    window.addEventListener('wheel', handleWheel, { passive: false })
-    return () => window.removeEventListener('wheel', handleWheel)
+    window.addEventListener("wheel", handleWheel, { passive: false })
+    return () => window.removeEventListener("wheel", handleWheel)
   }, [])
-
-
 
   // ── 回到顶部 ───────────────────────────────────────────────
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
   return (
@@ -127,10 +136,7 @@ export default function HomeGroupLayout({ children }: { children: React.ReactNod
                 <li key={item.key}>
                   <Link
                     href={item.route}
-                    className={cn(
-                      styles.navLink,
-                      pathname === item.route && styles.navLinkActive
-                    )}
+                    className={cn(styles.navLink, pathname === item.route && styles.navLinkActive)}
                   >
                     {item.label}
                   </Link>
@@ -144,10 +150,7 @@ export default function HomeGroupLayout({ children }: { children: React.ReactNod
               onClick={() => setMenuOpen((v) => !v)}
               aria-label="菜单"
             >
-              {menuOpen
-                ? <X className={styles.iconBtnSvg} />
-                : <Menu className={styles.iconBtnSvg} />
-              }
+              {menuOpen ? <X className={styles.iconBtnSvg} /> : <Menu className={styles.iconBtnSvg} />}
             </button>
           </div>
         )}
@@ -160,10 +163,7 @@ export default function HomeGroupLayout({ children }: { children: React.ReactNod
                 key={item.key}
                 href={item.route}
                 onClick={() => setMenuOpen(false)}
-                className={cn(
-                  styles.mobileLink,
-                  pathname === item.route && styles.mobileLinkActive
-                )}
+                className={cn(styles.mobileLink, pathname === item.route && styles.mobileLinkActive)}
               >
                 {item.label}
               </Link>
@@ -180,9 +180,14 @@ export default function HomeGroupLayout({ children }: { children: React.ReactNod
 
       {/* ── 浮动操作按钮组 ── */}
       <div className={styles.floatButtonContainer}>
-        <FloatButton downIconClick={scrollToTop} upIconClick={openBiliBili} leftIconClick={() => {
-          setVisible(pre => !pre)
-        }} showBackTop={showBackTop} />
+        <FloatButton
+          downIconClick={scrollToTop}
+          upIconClick={openBiliBili}
+          leftIconClick={() => {
+            setVisible((pre) => !pre)
+          }}
+          showBackTop={showBackTop}
+        />
       </div>
 
       <AIChatCard visible={visible} setVisible={setVisible} />

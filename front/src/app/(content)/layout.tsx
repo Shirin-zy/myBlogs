@@ -14,6 +14,7 @@ import styles from "./layout.module.less"
 const navLinks = [
   { route: "/", label: "首页", key: "home" },
   { route: "/archive", label: "归档", key: "archive" },
+  { route: "/toolset", label: "资源库", key: "toolset" },
   { route: "/login", label: "登录", key: "login" },
 ]
 

@@ -8,24 +8,30 @@
 backend/
 ├── api/                    # 核心业务逻辑
 │   ├── routes/             # 路由分发层 (按模块划分子目录)
-│   │   ├── article/        # 文章模块 (已从 Mock 迁移至 DB)
-│   │   │   ├── __init__.py # 聚合文章路由
-│   │   │   ├── allArticle.py # 后台管理获取所有文章
-│   │   │   ├── publishedArticle.py # 门户获取已发布文章
-│   │   │   ├── saveArticle.py # 保存/更新文章
-│   │   │   ├── articleDetail.py # 获取文章详情
-│   │   │   ├── deleteArticle.py # 删除文章
-│   │   │   └── updateStatus.py # 更新文章状态
-│   │   ├── auth/           # 认证模块
-│   │   ├── base/           # 基础模块
-│   │   ├── llm/            # AI 模块
-│   │   └── __init__.py     # 统一导出所有模块路由
-│   ├── schemas/            # Pydantic 数据模型 (用于校验和序列化)
-│   ├── deps.py             # FastAPI 依赖项 (如 JWT 鉴权)
-│   └── __init__.py
+    │   │   ├── article/        # 文章模块 (已从 Mock 迁移至 DB)
+    │   │   │   ├── __init__.py # 聚合文章路由
+    │   │   │   ├── allArticle.py # 后台管理获取所有文章
+    │   │   │   ├── publishedArticle.py # 门户获取已发布文章
+    │   │   │   ├── saveArticle.py # 保存/更新文章
+    │   │   │   ├── articleDetail.py # 获取文章详情
+    │   │   │   ├── deleteArticle.py # 删除文章
+    │   │   │   ├── updateStatus.py # 更新文章状态
+    │   │   │   └── tagStats.py     # 标签统计接口
+    │   │   ├── auth/           # 认证模块
+    │   │   ├── base/           # 基础模块
+    │   │   │   ├── __init__.py
+    │   │   │   ├── health.py
+    │   │   │   ├── upload.py
+    │   │   │   └── toolset.py      # 工具集接口
+    │   │   ├── llm/            # AI 模块
+    │   │   └── __init__.py     # 统一导出所有模块路由
+    │   ├── schemas/            # Pydantic 数据模型 (用于校验和序列化)
+    │   ├── deps.py             # FastAPI 依赖项 (如 JWT 鉴权)
+    │   └── __init__.py
 ├── models/                 # SQLAlchemy 数据库模型
 │   ├── __init__.py
-│   └── article.py          # 文章表模型
+│   ├── article.py          # 文章表模型
+│   └── toolset.py          # 工具集表模型
 ├── utils/                  # 工具类
 ├── database.py             # 数据库连接初始化与会话管理
 ├── config.py               # 配置文件 (含数据库连接解析)
@@ -53,6 +59,26 @@ backend/
 | `state`      | `VARCHAR(20)`  | 状态 (`published`, `draft`, `takeoff`) | `draft`   |
 | `comment`    | `INTEGER`      | 评论数量                               | `0`       |
 | `author`     | `VARCHAR(100)` | 作者用户名                             | `NULL`    |
+
+### 工具集表 (`toolsets`)
+
+| 字段名       | 类型           | 说明           | 默认值 |
+| :----------- | :------------- | :------------- | :----- |
+| `id`         | `INTEGER`      | 主键 ID (自增) | -      |
+| `categoryId` | `VARCHAR(50)`  | 分类 ID (索引) | -      |
+| `name`       | `VARCHAR(100)` | 工具名称       | -      |
+| `desc`       | `TEXT`         | 工具描述       | `NULL` |
+| `url`        | `VARCHAR(500)` | 工具链接       | -      |
+| `iconUrl`    | `VARCHAR(500)` | 网站图标地址   | `NULL` |
+
+#####　说明
+categoryId取值:
+{ id: "ai-tools", name: "AI 工具", icon: "Bot" },
+{ id: "design-drawing", name: "绘图设计", icon: "Palette" },
+{ id: "dev-tools", name: "开发工具", icon: "Code" },
+{ id: "video-music", name: "影音资源", icon: "Video" },
+{ id: "material-resources", name: "设计素材", icon: "Library" },
+{ id: "others", name: "其它", icon: "MoreHorizontal" },
 
 ## 快速启动
 
