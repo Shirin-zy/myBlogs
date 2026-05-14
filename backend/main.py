@@ -6,13 +6,18 @@ from config import HOST, PORT, UPLOAD_DIR
 
 from api.routes import base_router, auth_router, article_router, llm_router
 from database import engine, Base
-import models.article  # 导入模型以确保 Base 知道它们
-import models.toolset  # 导入模型以确保 Base 知道它们
+import asyncio
+from utils.scheduler import update_article_stats
 
 # 创建数据库表
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="MyBlog Backend (FastAPI)")
+
+@app.on_event("startup")
+async def startup_event():
+    # 启动定时任务
+    asyncio.create_task(update_article_stats())
 
 # CORS settings
 app.add_middleware(

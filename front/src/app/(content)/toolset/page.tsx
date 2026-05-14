@@ -3,9 +3,11 @@
 import React, { useState, useEffect, useCallback } from "react"
 import CategorySidebar, { type Category } from "@/components/toolset/CategorySidebar"
 import ToolCard from "@/components/toolset/ToolCard"
-import styles from "./page.module.less"
-import { useApi } from "@/hooks/api-context"
 import { type Website } from "@/lib/api/others"
+import { useApi } from "@/hooks/api-context"
+import Loader from "@/components/others/loading"
+import Empty from "@/components/others/Empty"
+import styles from "./page.module.less"
 
 // Mock data
 const CATEGORIES: Category[] = [
@@ -19,19 +21,28 @@ const CATEGORIES: Category[] = [
 
 const ToolsetPage = () => {
   const api = useApi()
-  const [toolsets, setToolsets] = useState<Website[]>([])
   const [activeCategoryId, setActiveCategoryId] = useState(CATEGORIES[0].id) // Default to AI 工具
+  const [loading, setLoading] = useState(true)
+  const [toolsets, setToolsets] = useState<Website[]>([])
+
   const fetchToolsets = useCallback(
-    async (activeCategoryId: string) => {
-      const toolsets = await api.toolset.getToolsets({ categoryId: activeCategoryId })
-      setToolsets(toolsets)
+    async (categoryId: string) => {
+      setLoading(true)
+      try {
+        const res = await api.others.getToolsets({ categoryId })
+        setToolsets(res || [])
+      } catch (error) {
+        console.error("Error fetching toolsets:", error)
+      } finally {
+        setLoading(false)
+      }
     },
-    [api, activeCategoryId],
+    [api],
   )
 
   useEffect(() => {
     fetchToolsets(activeCategoryId)
-  }, [fetchToolsets])
+  }, [activeCategoryId, fetchToolsets])
 
   return (
     <div className={styles.container}>
@@ -43,11 +54,20 @@ const ToolsetPage = () => {
           <div className={styles.header}>
             <h2 className={styles.title}>{CATEGORIES.find((c) => c.id === activeCategoryId)?.name}</h2>
           </div>
-          <div className={styles.grid}>
-            {toolsets.map((tool) => (
-              <ToolCard key={tool.id} name={tool.name} desc={tool.desc} url={tool.url} icon={tool.iconUrl} />
-            ))}
-          </div>
+
+          {loading ? (
+            <div className={styles.loadingWrapper}>
+              <Loader />
+            </div>
+          ) : toolsets.length > 0 ? (
+            <div className={styles.grid}>
+              {toolsets.map((tool) => (
+                <ToolCard key={tool.id} name={tool.name} desc={tool.desc} url={tool.url} icon={tool.iconUrl} />
+              ))}
+            </div>
+          ) : (
+            <Empty description="该分类下暂无工具" />
+          )}
         </div>
       </div>
     </div>

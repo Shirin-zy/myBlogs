@@ -8,6 +8,7 @@ import { type ArticleItem as ArticleProps } from "@/lib/api/article"
 import ArticleItem from "./articleItem/index"
 import { useApi } from "@/hooks/api-context"
 import Loader from "@/components/others/loading"
+import Empty from "@/components/others/Empty"
 
 interface FilterProps {
   categorys: { name: string; type: string }[]
@@ -91,7 +92,7 @@ const Article = () => {
   const category = [
     { name: "全部", type: "all" },
     { name: "前端", type: "前端技术" },
-    { name: "后端", type: "后端技术" },
+    { name: "后端", type: "后端开发" },
     { name: "随笔", type: "日常随笔" },
     { name: ">> 更多", type: "more" },
   ]
@@ -104,8 +105,12 @@ const Article = () => {
           <div className={styles.loaderContainer}>
             <Loader />
           </div>
+        ) : articles.length > 0 ? (
+          articles.map((item) => <ArticleItem key={item.id} {...item} />)
         ) : (
-          articles.length > 0 && articles.map((item) => <ArticleItem key={item.id} {...item} />)
+          <div className={styles.empty}>
+            <Empty description="暂无文章" />
+          </div>
         )}
       </div>
 

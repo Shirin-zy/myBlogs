@@ -7,7 +7,7 @@ import { createOthersApi, type OthersApi } from "@/lib/api/others"
 
 interface ApiResources {
   article: ArticleApi
-  toolset: OthersApi
+  others: OthersApi
 }
 
 interface ApiContext {
@@ -20,7 +20,7 @@ export const ApiProvider = ({ children }: { children: ReactNode }) => {
   const resources = useMemo(
     () => ({
       article: createArticleApi(http),
-      toolset: createOthersApi(http),
+      others: createOthersApi(http),
     }),
     [http],
   )

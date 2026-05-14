@@ -5,6 +5,7 @@ export interface ArticleItem {
   category: string
   comment: number
   created_at: string
+  updated_at?: string
   id: string
   is_new: boolean
   tags: string[]
@@ -40,7 +41,7 @@ interface saveArticleResponse {
 interface articleDetailBackendResponse {
   code: number
   message: string
-  data: ArticleItem & { content: string }
+  data: ArticleItem & { content: string; word_count: number }
 }
 
 interface deleteArticleBackendResponse {
@@ -85,7 +86,7 @@ export interface ArticleApi {
   getArticles: (params?: getArticlesPayload) => Promise<ArticleResponse>
   getAllArticles: () => Promise<ArticleResponse>
   saveArticle: (payload: saveArticlePayload) => Promise<saveArticleResponse>
-  getArticleDetail: (id: string) => Promise<ArticleItem & { content: string }>
+  getArticleDetail: (id: string) => Promise<ArticleItem & { content: string; word_count: number }>
   deleteArticle: (id: string) => Promise<void>
   updateArticleState: (id: string, state: "published" | "draft" | "takeoff") => Promise<void>
   getArchive: () => Promise<AarchiveItem[]>
@@ -106,7 +107,6 @@ export const createArticleApi = (client: HttpClient): ArticleApi => {
     async getArticles(params?: getArticlesPayload) {
       try {
         const response = await client.get<ArticleBackendResponse>(PUBLISHED_ARTICLE_API_URL, { params })
-        console.log("获取文章列表成功:", response)
         if (!response.data || (response.code !== 0 && response.code !== 200)) {
           throw new ApiError({
             status: 500,

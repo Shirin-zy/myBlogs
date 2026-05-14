@@ -3,6 +3,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from database import get_db
 from models.article import Article
+from utils.text_utils import count_readable_words
 
 router = APIRouter(tags=["article"])
 
@@ -19,4 +20,7 @@ async def get_article_detail(id: str, db: Session = Depends(get_db)):
     if not article:
         raise HTTPException(status_code=404, detail="文章不存在")
 
-    return {"code": 200, "message": "获取文章详情成功", "data": article.to_dict()}
+    data = article.to_dict()
+    data["word_count"] = count_readable_words(article.content)
+
+    return {"code": 200, "message": "获取文章详情成功", "data": data}

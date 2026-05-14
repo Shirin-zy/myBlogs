@@ -22,7 +22,8 @@ backend/
     │   │   │   ├── __init__.py
     │   │   │   ├── health.py
     │   │   │   ├── upload.py
-    │   │   │   └── toolset.py      # 工具集接口
+    │   │   │   ├── toolset.py      # 工具集接口
+    │   │   │   └── overview.py     # 网站概览接口
     │   │   ├── llm/            # AI 模块
     │   │   └── __init__.py     # 统一导出所有模块路由
     │   ├── schemas/            # Pydantic 数据模型 (用于校验和序列化)
@@ -33,6 +34,10 @@ backend/
 │   ├── article.py          # 文章表模型
 │   └── toolset.py          # 工具集表模型
 ├── utils/                  # 工具类
+│   ├── text_utils.py       # 文本处理工具 (字数统计等)
+│   └── scheduler.py        # 定时任务 (文章字数统计)
+├── storage/                # 持久化存储
+│   └── tasks/              # 定时任务执行结果 (json 缓存)
 ├── database.py             # 数据库连接初始化与会话管理
 ├── config.py               # 配置文件 (含数据库连接解析)
 ├── main.py                 # 程序入口，负责初始化应用并注册路由

@@ -12,7 +12,7 @@ import styles from "./page.module.less"
 const ArticleDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
   const router = useRouter()
   const { id } = use(params)
-  const [article, setArticle] = useState<(ArticleItem & { content: string }) | undefined>()
+  const [article, setArticle] = useState<(ArticleItem & { content: string; word_count: number }) | undefined>()
   const api = useApi()
 
   const fetchArticle = async () => {
@@ -55,16 +55,16 @@ const ArticleDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
           <div className={styles.meta}>
             <div className={styles.metaItem}></div>
             <div className={styles.metaItem}>
-              <RefreshCw /> 更新于 {article?.created_at}
+              <RefreshCw /> 更新于 {article?.updated_at || "未知"}
             </div>
             <div className={styles.metaItem}>
-              <FileText /> 字数总计: {0}
+              <FileText /> 字数总计: {article?.word_count || 0}
             </div>
             <div className={styles.metaItem}>
-              <Clock /> 阅读时长: {"5分钟"}
+              <Clock /> 阅读时长: {`${Math.ceil((article?.word_count || 0) / 120)}分钟`}
             </div>
             <div className={styles.metaItem}>
-              <Eye /> 阅读量: {0}
+              <Eye /> 阅读量: 暂无
             </div>
             <div className={styles.metaItem}>
               <MapPin /> {"未知"}
