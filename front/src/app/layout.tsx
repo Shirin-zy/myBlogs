@@ -1,18 +1,19 @@
-import type { Metadata } from "next"
-import "./globals.css"
-import { ThemeProvider } from "@/components/providers/theme-provider"
-import { ThemeScopeGuard } from "@/components/providers/theme-scope-guard"
-import { AppStoreProvider } from "@/hooks/store/app-store"
-import { ApiProvider } from "@/hooks/api-context"
-import { Toaster } from "@/components/ui/toaster"
+import type { Metadata } from "next";
+import "./globals.css";
+import { ThemeProvider } from "@/components/providers/theme-provider";
+import { ThemeScopeGuard } from "@/components/providers/theme-scope-guard";
+import { AppStoreProvider } from "@/hooks/store/app-store";
+import { ApiProvider } from "@/hooks/api-context";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "Blog - (●´ω｀●)ゞ ",
-  description: "这是一个基于 Next.js 的博客管理系统，支持文章发布、分类、标签、评论等功能。",
+  description:
+    "这是一个基于 Next.js 的博客管理系统，支持文章发布、分类、标签、评论等功能。",
   icons: {
     icon: "/favicon.png",
   },
-}
+};
 
 /**
  * 主题作用域策略：
@@ -27,7 +28,11 @@ export const metadata: Metadata = {
  * 2. ThemeScopeGuard — 在客户端路由切换后检测 pathname，
  *    强制 setTheme('light') 同步 html class，防止 Next.js SPA 导航后主题残留
  */
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="zh-CN" suppressHydrationWarning>
       <head>
@@ -47,21 +52,25 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
         <script
+          charSet="UTF-8"
+          id="LA_COLLECT"
+          src="//sdk.51.la/js-sdk-pro.min.js"
+        />
+        <script
           dangerouslySetInnerHTML={{
             __html: `
-              var _hmt = _hmt || [];
-              (function() {
-                var hm = document.createElement("script");
-                hm.src = "https://hm.baidu.com/hm.js?111ee462f814de8fbc9c8be18e99e41a";
-                var s = document.getElementsByTagName("script")[0];
-                s.parentNode.insertBefore(hm, s);
-              })();
+              LA.init({id:"3QGgUAXxAClI16CT",ck:"3QGgUAXxAClI16CT",autoTrack:true,hashMode:true})
             `,
           }}
         />
       </head>
       <body>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
           <ThemeScopeGuard>
             <AppStoreProvider>
               <ApiProvider>
@@ -73,5 +82,5 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </ThemeProvider>
       </body>
     </html>
-  )
+  );
 }
