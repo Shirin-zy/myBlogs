@@ -9,6 +9,7 @@ import {
   Settings,
   PenSquare,
   ExternalLink,
+  BarChart3,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Separator } from '@/components/ui/separator'
@@ -19,6 +20,11 @@ const navItems = [
     title: '数据工作台',
     href: '/dashboard',
     icon: LayoutDashboard,
+  },
+  {
+    title: '数据分析',
+    href: '/analysis',
+    icon: BarChart3,
   },
   {
     title: '文章管理',
