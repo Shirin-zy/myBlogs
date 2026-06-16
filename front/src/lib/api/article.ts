@@ -1,203 +1,223 @@
-import { type HttpClient, ApiError } from "@/lib/http"
+import { type HttpClient, ApiError } from "@/lib/http";
 
 export interface ArticleItem {
-  bgPicture: string
-  category: string
-  comment: number
-  created_at: string
-  updated_at?: string
-  id: string
-  is_new: boolean
-  tags: string[]
-  title: string
-  state?: "published" | "draft" | "takeoff"
+  bgPicture: string;
+  category: string;
+  comment: number;
+  created_at: string;
+  updated_at?: string;
+  id: string;
+  is_new: boolean;
+  tags: string[];
+  title: string;
+  state?: "published" | "draft" | "takeoff";
+  views: number;
 }
 
 interface ArticleResponse {
-  list: ArticleItem[]
-  total: number
+  list: ArticleItem[];
+  total: number;
 }
 
 interface ArticleBackendResponse {
-  code: number
-  message: string
-  data: ArticleResponse
+  code: number;
+  message: string;
+  data: ArticleResponse;
 }
 
 interface saveArticlePayload {
-  id?: string
-  title: string
-  content: string
-  tags: string[]
-  category: string
-  bgPicture: string
+  id?: string;
+  title: string;
+  content: string;
+  tags: string[];
+  category: string;
+  bgPicture: string;
 }
 
 interface saveArticleResponse {
-  code: number
-  message: string
+  code: number;
+  message: string;
 }
 
 interface articleDetailBackendResponse {
-  code: number
-  message: string
-  data: ArticleItem & { content: string; word_count: number }
+  code: number;
+  message: string;
+  data: ArticleItem & { content: string; word_count: number; location: string };
 }
 
 interface deleteArticleBackendResponse {
-  code: number
-  message: string
-  data: { id: string }
+  code: number;
+  message: string;
+  data: { id: string };
 }
 
 export interface AarchiveItem {
-  id: string
-  year: string
-  title: string
-  desc: string
-  imgUrl: string
+  id: string;
+  year: string;
+  title: string;
+  desc: string;
+  imgUrl: string;
 }
 
 interface AarchiveBackendResponse {
-  code: number
-  message: string
-  data: AarchiveItem[]
+  code: number;
+  message: string;
+  data: AarchiveItem[];
 }
 
 interface getArticlesPayload {
-  page?: number
-  limit?: number
-  tag?: string
-  category?: string
+  page?: number;
+  limit?: number;
+  tag?: string;
+  category?: string;
 }
 
 export interface Tag {
-  name: string
-  count: number
+  name: string;
+  count: number;
 }
 
 interface tagsSummaryBackendResponse {
-  code: number
-  message: string
-  data: Tag[]
+  code: number;
+  message: string;
+  data: Tag[];
 }
 
 export interface ArticleApi {
-  getArticles: (params?: getArticlesPayload) => Promise<ArticleResponse>
-  getAllArticles: () => Promise<ArticleResponse>
-  saveArticle: (payload: saveArticlePayload) => Promise<saveArticleResponse>
-  getArticleDetail: (id: string) => Promise<ArticleItem & { content: string; word_count: number }>
-  deleteArticle: (id: string) => Promise<void>
-  updateArticleState: (id: string, state: "published" | "draft" | "takeoff") => Promise<void>
-  getArchive: () => Promise<AarchiveItem[]>
-  getTagsSummary: () => Promise<Tag[]>
+  getArticles: (params?: getArticlesPayload) => Promise<ArticleResponse>;
+  getAllArticles: () => Promise<ArticleResponse>;
+  saveArticle: (payload: saveArticlePayload) => Promise<saveArticleResponse>;
+  getArticleDetail: (
+    id: string,
+  ) => Promise<
+    ArticleItem & { content: string; word_count: number; location: string }
+  >;
+  deleteArticle: (id: string) => Promise<void>;
+  updateArticleState: (
+    id: string,
+    state: "published" | "draft" | "takeoff",
+  ) => Promise<void>;
+  getArchive: () => Promise<AarchiveItem[]>;
+  getTagsSummary: () => Promise<Tag[]>;
 }
 
-const PUBLISHED_ARTICLE_API_URL = "/blogs/articleList"
-const ALL_ARTICLE_API_URL = "/dashboard/allArticle"
-const SAVE_ARTICLE_API_URL = "/save"
-const DELETE_ARTICLE_API_URL = "/delete"
-const ARTICLE_DETAIL_API_URL = "/articleDetail"
-const UPDATE_ARTICLE_STATUS_API_URL = "/updateStatus"
-const ARCHIVE_API_URL = "/archive"
-const TAGS_API_URL = "/tagSummary"
+const PUBLISHED_ARTICLE_API_URL = "/blogs/articleList";
+const ALL_ARTICLE_API_URL = "/dashboard/allArticle";
+const SAVE_ARTICLE_API_URL = "/save";
+const DELETE_ARTICLE_API_URL = "/delete";
+const ARTICLE_DETAIL_API_URL = "/articleDetail";
+const UPDATE_ARTICLE_STATUS_API_URL = "/updateStatus";
+const ARCHIVE_API_URL = "/archive";
+const TAGS_API_URL = "/tagSummary";
 
 export const createArticleApi = (client: HttpClient): ArticleApi => {
   return {
     async getArticles(params?: getArticlesPayload) {
       try {
-        const response = await client.get<ArticleBackendResponse>(PUBLISHED_ARTICLE_API_URL, { params })
+        const response = await client.get<ArticleBackendResponse>(
+          PUBLISHED_ARTICLE_API_URL,
+          { params },
+        );
         if (!response.data || (response.code !== 0 && response.code !== 200)) {
           throw new ApiError({
             status: 500,
             message: response.message || "Failed to load articles",
             code: String(response.code),
             details: response,
-          })
+          });
         }
-        return response.data
+        return response.data;
       } catch (error) {
         throw new ApiError({
           status: 500,
           message: "Failed to load articles",
           code: String(500),
           details: error,
-        })
+        });
       }
     },
     async getAllArticles() {
       try {
-        const response = await client.get<ArticleBackendResponse>(ALL_ARTICLE_API_URL)
+        const response =
+          await client.get<ArticleBackendResponse>(ALL_ARTICLE_API_URL);
         if (!response.data || (response.code !== 0 && response.code !== 200)) {
           throw new ApiError({
             status: 500,
             message: response.message || "Failed to load articles",
             code: String(response.code),
             details: response,
-          })
+          });
         }
-        return response.data
+        return response.data;
       } catch (error) {
         throw new ApiError({
           status: 500,
           message: "Failed to load articles",
           code: String(500),
           details: error,
-        })
+        });
       }
     },
     async saveArticle(payload: saveArticlePayload) {
       try {
-        const response = await client.post<saveArticleResponse>(SAVE_ARTICLE_API_URL, payload)
+        const response = await client.post<saveArticleResponse>(
+          SAVE_ARTICLE_API_URL,
+          payload,
+        );
         if (response.code !== 0 && response.code !== 200) {
           throw new ApiError({
             status: 500,
             message: response.message || "Failed to save article",
             code: String(response.code),
             details: response,
-          })
+          });
         }
-        return response
+        return response;
       } catch (error) {
         throw new ApiError({
           status: 500,
           message: "Failed to load articles",
           code: String(500),
           details: error,
-        })
+        });
       }
     },
     async getArticleDetail(id) {
       try {
-        const response = await client.get<articleDetailBackendResponse>(`${ARTICLE_DETAIL_API_URL}?id=${id}`)
+        const response = await client.get<articleDetailBackendResponse>(
+          `${ARTICLE_DETAIL_API_URL}?id=${id}`,
+        );
         if (!response.data || (response.code !== 0 && response.code !== 200)) {
           throw new ApiError({
             status: 500,
             message: response.message || "Failed to load article detail",
             code: String(response.code),
             details: response,
-          })
+          });
         }
-        return response.data
+        return response.data;
       } catch (error) {
         throw new ApiError({
           status: 500,
           message: "Failed to load article detail",
           code: String(500),
           details: error,
-        })
+        });
       }
     },
     async deleteArticle(id: string) {
       try {
-        const response = await client.post<deleteArticleBackendResponse>(DELETE_ARTICLE_API_URL, { id })
+        const response = await client.post<deleteArticleBackendResponse>(
+          DELETE_ARTICLE_API_URL,
+          { id },
+        );
         if (response.code !== 0 && response.code !== 200) {
           throw new ApiError({
             status: 500,
             message: response.message || "Failed to delete article",
             code: String(response.code),
             details: response,
-          })
+          });
         }
       } catch (error) {
         throw new ApiError({
@@ -205,22 +225,25 @@ export const createArticleApi = (client: HttpClient): ArticleApi => {
           message: "Failed to delete article",
           code: String(500),
           details: error,
-        })
+        });
       }
     },
     async updateArticleState(id, state) {
       try {
-        const response = await client.post<{ code: number; message: string }>(UPDATE_ARTICLE_STATUS_API_URL, {
-          id,
-          state,
-        })
+        const response = await client.post<{ code: number; message: string }>(
+          UPDATE_ARTICLE_STATUS_API_URL,
+          {
+            id,
+            state,
+          },
+        );
         if (response.code !== 0 && response.code !== 200) {
           throw new ApiError({
             status: 500,
             message: response.message || "Failed to update article status",
             code: String(response.code),
             details: response,
-          })
+          });
         }
       } catch (error) {
         throw new ApiError({
@@ -228,50 +251,52 @@ export const createArticleApi = (client: HttpClient): ArticleApi => {
           message: "Failed to update article status",
           code: String(500),
           details: error,
-        })
+        });
       }
     },
     async getArchive() {
       try {
-        const response = await client.get<AarchiveBackendResponse>(ARCHIVE_API_URL)
+        const response =
+          await client.get<AarchiveBackendResponse>(ARCHIVE_API_URL);
         if (response.code !== 0 && response.code !== 200) {
           throw new ApiError({
             status: 500,
             message: response.message || "Failed to update article status",
             code: String(response.code),
             details: response,
-          })
+          });
         }
-        return response.data || []
+        return response.data || [];
       } catch (error) {
         throw new ApiError({
           status: 500,
           message: "Failed to load archive items",
           code: String(500),
           details: error,
-        })
+        });
       }
     },
     async getTagsSummary() {
       try {
-        const response = await client.get<tagsSummaryBackendResponse>(TAGS_API_URL)
+        const response =
+          await client.get<tagsSummaryBackendResponse>(TAGS_API_URL);
         if (response.code !== 0 && response.code !== 200) {
           throw new ApiError({
             status: 500,
             message: response.message || "Failed to update article status",
             code: String(response.code),
             details: response,
-          })
+          });
         }
-        return response.data || []
+        return response.data || [];
       } catch (error) {
         throw new ApiError({
           status: 500,
           message: "Failed to load archive items",
           code: String(500),
           details: error,
-        })
+        });
       }
     },
-  }
-}
+  };
+};

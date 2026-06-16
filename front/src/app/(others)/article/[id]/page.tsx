@@ -1,28 +1,40 @@
-"use client"
+"use client";
 
-import React, { use, useEffect, useState } from "react"
-import { Calendar, RefreshCw, FileText, Clock, Eye, MapPin, MessageSquare, ArrowLeft } from "lucide-react"
-import { useRouter } from "next/navigation"
-import "@wangeditor/editor/dist/css/style.css"
-import Footer from "@/components/home/footer"
-import { useApi } from "@/hooks/api-context"
-import { type ArticleItem } from "@/lib/api/article"
-import styles from "./page.module.less"
+import React, { use, useEffect, useState } from "react";
+import {
+  Calendar,
+  RefreshCw,
+  FileText,
+  Clock,
+  Eye,
+  MapPin,
+  MessageSquare,
+  ArrowLeft,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import "@wangeditor/editor/dist/css/style.css";
+import Footer from "@/components/home/footer";
+import { useApi } from "@/hooks/api-context";
+import { type ArticleItem } from "@/lib/api/article";
+import styles from "./page.module.less";
 
 const ArticleDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
-  const router = useRouter()
-  const { id } = use(params)
-  const [article, setArticle] = useState<(ArticleItem & { content: string; word_count: number }) | undefined>()
-  const api = useApi()
+  const router = useRouter();
+  const { id } = use(params);
+  const [article, setArticle] = useState<
+    | (ArticleItem & { content: string; word_count: number; location: string })
+    | undefined
+  >();
+  const api = useApi();
 
   const fetchArticle = async () => {
-    const response = await api.article.getArticleDetail(id)
-    setArticle(response)
-  }
+    const response = await api.article.getArticleDetail(id);
+    setArticle(response);
+  };
 
   useEffect(() => {
-    fetchArticle()
-  }, [id])
+    fetchArticle();
+  }, [id]);
 
   return (
     <div className={styles.detailPage}>
@@ -30,11 +42,17 @@ const ArticleDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
       <header
         className={styles.header}
         style={{
-          backgroundImage: article?.bgPicture ? `url(${article.bgPicture})` : undefined,
+          backgroundImage: article?.bgPicture
+            ? `url(${article.bgPicture})`
+            : undefined,
         }}
       >
         <div className={styles.headerMask}></div>
-        <button className={styles.backButton} onClick={() => router.back()} title="返回上次页面">
+        <button
+          className={styles.backButton}
+          onClick={() => router.back()}
+          title="返回上次页面"
+        >
           <ArrowLeft size={20} />
           <span>返回</span>
         </button>
@@ -61,13 +79,14 @@ const ArticleDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
               <FileText /> 字数总计: {article?.word_count || 0}
             </div>
             <div className={styles.metaItem}>
-              <Clock /> 阅读时长: {`${Math.ceil((article?.word_count || 0) / 120)}分钟`}
+              <Clock /> 阅读时长:{" "}
+              {`${Math.ceil((article?.word_count || 0) / 120)}分钟`}
             </div>
             <div className={styles.metaItem}>
-              <Eye /> 阅读量: 暂无
+              <Eye /> 阅读量: {article?.views || 0}
             </div>
             <div className={styles.metaItem}>
-              <MapPin /> {"未知"}
+              <MapPin /> {article?.location || "未知"}
             </div>
             <div className={styles.metaItem}>
               <MessageSquare /> 评论数: {article?.comment || 0}
@@ -85,12 +104,30 @@ const ArticleDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
           shapeRendering="auto"
         >
           <defs>
-            <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+            <path
+              id="gentle-wave"
+              d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"
+            />
           </defs>
           <g className={styles.parallax}>
-            <use xlinkHref="#gentle-wave" x="48" y="0" fill="rgba(244,247,249,0.7)" />
-            <use xlinkHref="#gentle-wave" x="48" y="3" fill="rgba(244,247,249,0.5)" />
-            <use xlinkHref="#gentle-wave" x="48" y="5" fill="rgba(244,247,249,0.3)" />
+            <use
+              xlinkHref="#gentle-wave"
+              x="48"
+              y="0"
+              fill="rgba(244,247,249,0.7)"
+            />
+            <use
+              xlinkHref="#gentle-wave"
+              x="48"
+              y="3"
+              fill="rgba(244,247,249,0.5)"
+            />
+            <use
+              xlinkHref="#gentle-wave"
+              x="48"
+              y="5"
+              fill="rgba(244,247,249,0.3)"
+            />
             <use xlinkHref="#gentle-wave" x="48" y="7" fill="#f4f7f9" />
           </g>
         </svg>
@@ -107,7 +144,7 @@ const ArticleDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
       </main>
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default ArticleDetailPage
+export default ArticleDetailPage;
