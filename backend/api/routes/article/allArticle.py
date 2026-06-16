@@ -12,6 +12,10 @@ router = APIRouter(tags=["article"])
 async def all_article(
     request: Request, user=Depends(jwt_auth_dependency), db: Session = Depends(get_db)
 ):
+    """
+    获取所有文章接口
+    返回所有文章的简要信息
+    """
     try:
         # 从数据库获取所有文章
         db_articles = db.query(Article).all()

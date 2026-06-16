@@ -63,7 +63,9 @@ backend/
 | `bgPicture`  | `VARCHAR(500)` | 背景图片 URL                           | `NULL`    |
 | `state`      | `VARCHAR(20)`  | 状态 (`published`, `draft`, `takeoff`) | `draft`   |
 | `comment`    | `INTEGER`      | 评论数量                               | `0`       |
+| `views`      | `INTEGER`      | 文章查看次数                           | `0`       |
 | `author`     | `VARCHAR(100)` | 作者用户名                             | `NULL`    |
+| `location`   | `VARCHAR(100)` | 文章发布者地理位置                     | `NULL`    |
 
 ### 工具集表 (`toolsets`)
 

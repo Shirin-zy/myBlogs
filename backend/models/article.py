@@ -16,7 +16,9 @@ class Article(Base):
     bgPicture = Column(String(500), nullable=True)
     state = Column(String(20), default="draft")  # published, draft, takeoff
     comment = Column(Integer, default=0)
+    views = Column(Integer, default=0)  # 文章查看次数
     author = Column(String(100), nullable=True)
+    location = Column(String(100), nullable=True)  # 文章发布者地理位置
 
     def to_dict(self):
         return {
@@ -31,5 +33,7 @@ class Article(Base):
             "bgPicture": self.bgPicture,
             "state": self.state,
             "comment": self.comment,
-            "author": self.author
+            "views": self.views,
+            "author": self.author,
+            "location": self.location
         }

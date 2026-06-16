@@ -1,11 +1,12 @@
 # 保存文章接口
 import uuid
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from api.deps import jwt_auth_dependency
 from api.schemas.article import ArticleSaveRequest
 from sqlalchemy.orm import Session
 from database import get_db
 from models.article import Article
+from utils.ip_utils import get_ip_location
 
 router = APIRouter(tags=["article"])
 
@@ -13,6 +14,7 @@ router = APIRouter(tags=["article"])
 @router.post("/save")
 async def save_article(
     request_data: ArticleSaveRequest,
+    request: Request,
     user=Depends(jwt_auth_dependency),
     db: Session = Depends(get_db),
 ):
@@ -21,6 +23,10 @@ async def save_article(
     如果携带 id 则更新文章，否则创建新文章
     数据将持久化到数据库
     """
+    # 获取客户端 IP 地址和地理位置
+    client_ip = request.client.host if request.client else None
+    location = await get_ip_location(client_ip) if client_ip else None
+
     if request_data.id:
         # 更新逻辑
         article = db.query(Article).filter(Article.id == request_data.id).first()
@@ -33,6 +39,7 @@ async def save_article(
         article.tags = request_data.tags
         article.category = request_data.category
         article.bgPicture = request_data.bgPicture
+        article.location = location
 
         if request_data.state:
             article.state = request_data.state
@@ -51,6 +58,7 @@ async def save_article(
             state="draft",
             comment=0,
             author=user.get("username"),
+            location=location,
         )
         db.add(new_article)
         result_article = new_article
