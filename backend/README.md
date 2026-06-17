@@ -32,7 +32,8 @@ backend/
 ├── models/                 # SQLAlchemy 数据库模型
 │   ├── __init__.py
 │   ├── article.py          # 文章表模型
-│   └── toolset.py          # 工具集表模型
+│   ├── toolset.py          # 工具集表模型
+│   └── user.py             # 用户表模型
 ├── utils/                  # 工具类
 │   ├── text_utils.py       # 文本处理工具 (字数统计等)
 │   └── scheduler.py        # 定时任务 (文章字数统计)
@@ -77,6 +78,22 @@ backend/
 | `desc`       | `TEXT`         | 工具描述       | `NULL` |
 | `url`        | `VARCHAR(500)` | 工具链接       | -      |
 | `iconUrl`    | `VARCHAR(500)` | 网站图标地址   | `NULL` |
+
+### 用户表 (`user`)
+
+| 字段名             | 类型             | 说明                                     | 默认值    |
+| :----------------- | :--------------- | :--------------------------------------- | :-------- |
+| `id`               | `BIGINT UNSIGNED`| 主键 ID (自增)                           | -         |
+| `email`            | `VARCHAR(128)`   | 用户邮箱 (登录账号，唯一索引)            | -         |
+| `password`         | `VARCHAR(128)`   | 加密后的密码 (推荐 BCrypt 加密)          | -         |
+| `nickname`         | `VARCHAR(50)`    | 用户昵称                                 | `''`      |
+| `avatar_url`       | `VARCHAR(255)`   | 头像地址                                 | `''`      |
+| `verify_code`      | `VARCHAR(32)`    | 动态验证码                               | `''`      |
+| `verify_expire_time` | `DATETIME`     | 验证码过期时间 (索引)                    | `NULL`    |
+| `ext_info`         | `JSON`           | 用户拓展信息 (JSON 格式)                 | `NULL`    |
+| `role`             | `VARCHAR(20)`    | 用户角色 (admin 管理员 / user 普通用户)  | `'user'`  |
+| `status`           | `TINYINT UNSIGNED`| 账号状态 (0 禁用 / 1 正常)             | `1`       |
+| `create_time`      | `DATETIME`       | 创建时间                                 | `NOW()`   |
 
 #####　说明
 categoryId取值:

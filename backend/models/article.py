@@ -8,8 +8,8 @@ class Article(Base):
     id = Column(String(36), primary_key=True, index=True)
     title = Column(String(255), nullable=False)
     content = Column(Text, nullable=False)
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.datetime.now)
+    updated_at = Column(DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
     tags = Column(JSON, nullable=True)  # 存储为 JSON 数组
     category = Column(String(100), nullable=True)
     is_new = Column(Boolean, default=True)
