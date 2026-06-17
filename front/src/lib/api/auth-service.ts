@@ -11,13 +11,15 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "/api"
 /** 登录请求参数 */
 export interface LoginPayload {
   email: string
-  password: string
+  password?: string
+  verifyCode?: string
 }
 
 /** 登录响应中的用户信息 */
 export interface LoginUserInfo {
   user_id: string
   username: string
+  nickname: string
   role: string
 }
 
@@ -29,6 +31,11 @@ export interface LoginResponse {
     token: string
     user_info: LoginUserInfo
   }
+}
+
+/** 发送验证码请求参数 */
+export interface SendVerificationCodePayload {
+  email: string
 }
 
 /**
@@ -51,6 +58,31 @@ export async function loginApi(payload: LoginPayload): Promise<LoginResponse> {
 
   if (data.code !== 200) {
     throw new Error(data.message ?? "登录失败")
+  }
+
+  return data
+}
+
+/**
+ * 发送验证码接口
+ * POST /api/send-verification-code
+ */
+export async function sendVerificationCodeApi(payload: SendVerificationCodePayload) {
+  const res = await fetch(`${API_BASE_URL}/send-verification-code`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+    credentials: "include",
+  })
+
+  if (!res.ok) {
+    throw new Error(`发送验证码请求失败：HTTP ${res.status}`)
+  }
+
+  const data = await res.json()
+
+  if (data.code !== 200) {
+    throw new Error(data.message ?? "发送验证码失败")
   }
 
   return data

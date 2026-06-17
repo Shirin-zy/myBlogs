@@ -2,38 +2,103 @@
 
 import { createStore, type StoreApi, useStore } from "zustand"
 import { createContext, useContext, useRef, type ReactNode } from "react"
-import { loginApi, logoutApi } from "@/lib/api/auth-service"
+import { loginApi, logoutApi, sendVerificationCodeApi } from "@/lib/api/auth-service"
 
-/** Token Cookie 名称（与 middleware 保持一致） */
+const STORAGE_KEY = "app-store-state"
+
+interface userinfo{
+  user_id: string
+  username: string
+  nickname: string
+  role: string
+  email?: string
+  avatar?: string
+}
 interface AppStoreState {
-  user: string | null
+  user: userinfo | null
   isLogin: boolean
 }
 
 interface AppStoreAction {
-  login: (email: string, password: string) => void
+  loginWithPassword: (email: string, password: string) => void
+  loginWithCode: (email: string, verifyCode: string) => void
+  sendVerificationCode: (email: string) => void
   logout: () => void
 }
 
 type AppStore = AppStoreState & AppStoreAction
 
+// 从 localStorage 恢复状态
+const getInitialState = (): Partial<AppStoreState> => {
+  if (typeof window === "undefined") return { user: null, isLogin: false }
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    if (stored) {
+      return JSON.parse(stored)
+    }
+  } catch (e) {
+    console.error("Failed to load state from localStorage:", e)
+  }
+  return { user: null, isLogin: false }
+}
+
+// 保存状态到 localStorage
+const saveState = (state: AppStoreState) => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ user: state.user, isLogin: state.isLogin }))
+  } catch (e) {
+    console.error("Failed to save state to localStorage:", e)
+  }
+}
+
+// 清除 localStorage 中的状态
+const clearState = () => {
+  try {
+    localStorage.removeItem(STORAGE_KEY)
+  } catch (e) {
+    console.error("Failed to clear state from localStorage:", e)
+  }
+}
+
 /**
  * 管理员认证状态 Store
- * Token 存储在 js-cookie（非 HttpOnly），middleware 通过读取同名 Cookie 判断登录态。
+ * Token 存储在 Cookie（由服务端种入），middleware 通过读取同名 Cookie 判断登录态。
  * 用户信息持久化到 localStorage（非敏感信息）。
  */
 
-const createAppStore = (): StoreApi<AppStore> =>
-  createStore<AppStore>()((set, get) => ({
-    user: null,
-    isLogin: false,
-    login: async (email: string, password: string) => {
+const createAppStore = (): StoreApi<AppStore> => {
+  const initialState = getInitialState()
+  return createStore<AppStore>()((set, get) => ({
+    user: initialState.user ?? null,
+    isLogin: initialState.isLogin ?? false,
+    loginWithPassword: async (email: string, password: string) => {
       try {
         const res = await loginApi({ email, password })
         const { user_info } = res.data
-        set({ user: user_info.user_id, isLogin: true })
+        const newState = { user: user_info, isLogin: true }
+        set(newState)
+        saveState(newState)
       } catch (error) {
         set({ isLogin: false })
+        throw error
+      }
+    },
+    loginWithCode: async (email: string, verifyCode: string) => {
+      try {
+        const res = await loginApi({ email, verifyCode })
+        const { user_info } = res.data
+        const newState = { user: user_info, isLogin: true }
+        set(newState)
+        saveState(newState)
+      } catch (error) {
+        set({ isLogin: false })
+        throw error
+      }
+    },
+    sendVerificationCode: async (email: string) => {
+      try {
+        await sendVerificationCodeApi({ email })
+      } catch (error) {
         throw error
       }
     },
@@ -41,11 +106,13 @@ const createAppStore = (): StoreApi<AppStore> =>
       try {
         await logoutApi()
         set({ user: null, isLogin: false })
+        clearState()
       } catch (error) {
         throw error
       }
     },
   }))
+}
 
 const AppStoreContext = createContext<StoreApi<AppStore> | null>(null)
 
@@ -75,9 +142,11 @@ export const useAppStore = <T,>(selector: (state: AppStore) => T): T => {
 
 export const useAppStoreActions = () => {
   const store = useAppStoreContext()
-  const { login, logout } = store.getState()
+  const { loginWithPassword, loginWithCode, sendVerificationCode, logout } = store.getState()
   return {
-    login,
+    loginWithPassword,
+    loginWithCode,
+    sendVerificationCode,
     logout,
   }
 }

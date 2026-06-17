@@ -1,9 +1,11 @@
 "use client"
 
+import { useMemo } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState, useEffect, useCallback } from "react"
-import { PenSquare, Menu, X } from "lucide-react"
+import { PenSquare, Menu, X, User } from "lucide-react"
+import { useAppStore } from "@/hooks/store/app-store"
 import { cn } from "@/lib/utils"
 import { debounce } from "@/lib/utils"
 import FloatButton from "@/components/home/floatButton"
@@ -11,11 +13,10 @@ import AIChatCard from "@/components/home/aiChatCard"
 import Footer from "@/components/home/footer"
 import styles from "./layout.module.less"
 
-const navLinks = [
+const baseLinks = [
   { route: "/", label: "首页", key: "home" },
   { route: "/archive", label: "归档", key: "archive" },
   { route: "/toolset", label: "资源库", key: "toolset" },
-  { route: "/login", label: "登录", key: "login" },
 ]
 
 /**
@@ -24,11 +25,25 @@ const navLinks = [
  * 移除了 (home) 布局中的整屏滚动逻辑。
  */
 export default function ContentGroupLayout({ children }: { children: React.ReactNode }) {
+  const user = useAppStore((state) => state.user)
+  const isLogin = useAppStore((state) => state.isLogin)
+  const { role } = user || {}
   const pathname = usePathname()
   const [isScrolled, setIsScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [showBackTop, setShowBackTop] = useState(false)
   const [visible, setVisible] = useState(false)
+
+  const navLinks = useMemo(() => {
+    const links = [...baseLinks]
+    if (isLogin && role === 'admin') {
+      links.push({ route: "/dashboard", label: "管理后台", key: "back" })
+    }
+    if (!isLogin) {
+      links.push({ route: "/login", label: "登录", key: "login" })
+    }
+    return links
+  }, [role, isLogin])
 
   // ── 滚动监听 ──────────────────────────────────────────────
   const handleScroll = useCallback(() => {
@@ -66,25 +81,44 @@ export default function ContentGroupLayout({ children }: { children: React.React
             <span className={styles.logoText}>Personal Blog</span>
           </Link>
 
-          {/* 桌面端链接 */}
-          <ul className={styles.navList}>
-            {navLinks.map((item) => (
-              <li key={item.key}>
-                <Link href={item.route} className={cn(styles.navLink, pathname === item.route && styles.navLinkActive)}>
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          {/* 右侧区域：包含导航标签和操作按钮 */}
+          <div className={styles.navRight}>
+            {/* 桌面端链接 */}
+            <ul className={styles.navList}>
+              {navLinks.map((item) => (
+                <li key={item.key}>
+                  <Link href={item.route} className={cn(styles.navLink, pathname === item.route && styles.navLinkActive)}>
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
 
-          {/* 移动端汉堡按钮 */}
-          <button
-            className={cn(styles.iconBtn, styles.hamburger)}
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-label="菜单"
-          >
-            {menuOpen ? <X className={styles.iconBtnSvg} /> : <Menu className={styles.iconBtnSvg} />}
-          </button>
+            {/* 头像 */}
+            <div className={styles.avatarContainer} suppressHydrationWarning>
+              {user ? (
+                <img
+                  src={
+                    user?.avatar ||
+                    "http://47.108.73.254/images/a3c96fc6-3e1d-4a47-9dbb-ee2ba3ddc4fc.jpg"
+                  }
+                  alt={user.nickname}
+                  className={styles.avatar}
+                />
+              ) : (
+                <User className={styles.avatarIcon} />
+              )}
+            </div>
+
+            {/* 移动端汉堡按钮 */}
+            <button
+              className={cn(styles.iconBtn, styles.hamburger)}
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-label="菜单"
+            >
+              {menuOpen ? <X className={styles.iconBtnSvg} /> : <Menu className={styles.iconBtnSvg} />}
+            </button>
+          </div>
         </div>
 
         {/* 移动端展开菜单 */}

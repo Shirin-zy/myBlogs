@@ -24,6 +24,7 @@ interface EyeBallProps {
 interface AnimatedCharactersProps {
     isTyping?: boolean;
     isPasswordFocused?: boolean;
+    isCodeFocused?: boolean;
     showPassword?: boolean;
     passwordLength?: number;
 }
@@ -158,6 +159,7 @@ function EyeBall({
 export default function AnimatedCharacters({
     isTyping = false,
     isPasswordFocused = false,
+    isCodeFocused = false,
     showPassword = false,
     passwordLength = 0,
 }: AnimatedCharactersProps) {
@@ -258,7 +260,7 @@ export default function AnimatedCharacters({
     const orangePos = calculatePosition(orangeRef);
 
     const isHidingPassword = passwordLength > 0 && !showPassword;
-    const isLookingAway = isPasswordFocused && !showPassword;
+    const isLookingAway = (isPasswordFocused && !showPassword) || isCodeFocused;
 
     return (
         <div style={{ position: "relative", width: "550px", height: "400px" }}>

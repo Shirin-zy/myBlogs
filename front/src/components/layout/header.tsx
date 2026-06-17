@@ -1,33 +1,34 @@
-'use client'
+"use client";
 
-import { useTheme } from 'next-themes'
-import { Sun, Moon, Monitor, Bell, User, LogOut } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { useAppStore, useAppStoreActions } from '@/hooks/store/app-store'
-import { useRouter } from 'next/navigation'
+import { useTheme } from "next-themes";
+import { Sun, Moon, Monitor, Bell, User, LogOut } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useAppStore, useAppStoreActions } from "@/hooks/store/app-store";
+import { useRouter } from "next/navigation";
 
 /**
  * 管理后台顶部导航栏
  * 包含主题切换、通知及用户信息
  */
 export function Header() {
-  const { theme, setTheme } = useTheme()
-  const { logout } = useAppStoreActions()
-  const user = useAppStore((state) => state.user)
-  const router = useRouter()
+  const { theme, setTheme } = useTheme();
+  const { logout } = useAppStoreActions();
+  const user = useAppStore((state) => state.user);
+  const router = useRouter();
 
   const handleLogout = () => {
-    logout()
-    router.push('/login')
-  }
+    logout();
+    router.push("/login");
+  };
 
   const themeIcons = {
     light: <Sun className="h-4 w-4" />,
     dark: <Moon className="h-4 w-4" />,
     system: <Monitor className="h-4 w-4" />,
-  }
+  };
 
-  const nextTheme = theme === 'light' ? 'dark' : theme === 'dark' ? 'system' : 'light'
+  const nextTheme =
+    theme === "light" ? "dark" : theme === "dark" ? "system" : "light";
 
   return (
     <header className="h-14 flex items-center justify-between px-6 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shrink-0">
@@ -41,10 +42,10 @@ export function Header() {
           variant="ghost"
           size="icon"
           onClick={() => setTheme(nextTheme)}
-          title={`当前: ${theme ?? 'system'} 模式`}
+          title={`当前: ${theme ?? "system"} 模式`}
           suppressHydrationWarning
         >
-          {themeIcons[(theme as keyof typeof themeIcons) ?? 'system']}
+          {themeIcons[(theme as keyof typeof themeIcons) ?? "system"]}
         </Button>
 
         {/* 通知 */}
@@ -54,15 +55,26 @@ export function Header() {
 
         {/* 用户信息 */}
         <div className="flex items-center gap-2 pl-2 border-l border-border">
-          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-            <User className="h-4 w-4 text-primary" />
+          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center" suppressHydrationWarning>
+            {user ? (
+              <img
+                src={
+                  user?.avatar ||
+                  "http://47.108.73.254/images/a3c96fc6-3e1d-4a47-9dbb-ee2ba3ddc4fc.jpg"
+                }
+                alt={user.nickname}
+                className="w-full h-full rounded-full"
+              />
+            ) : (
+              <User className="h-4 w-4 text-primary" />
+            )}
           </div>
           <div className="hidden sm:block">
             <p className="text-sm font-medium text-foreground leading-none">
-              {user ?? '管理员'}
+              {user?.nickname ?? "用户"}
             </p>
             <p className="text-xs text-muted-foreground mt-0.5">
-              {user ?? 'admin'}
+              {user?.role ?? "user"}
             </p>
           </div>
           <Button
@@ -77,5 +89,5 @@ export function Header() {
         </div>
       </div>
     </header>
-  )
+  );
 }
