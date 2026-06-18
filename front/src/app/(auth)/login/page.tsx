@@ -85,7 +85,7 @@ function App() {
       setIsSubmitting(true);
       try {
         await loginWithPassword(cleanEmail, password);
-        router.replace("/dashboard");
+        router.replace("/home");
       } catch (err: unknown) {
         setPasswordError(true);
         setErrorMsg(err instanceof Error ? err.message : "邮箱或密码错误");
@@ -102,7 +102,7 @@ function App() {
       setIsSubmitting(true);
       try {
         await loginWithCode(cleanEmail, verifyCode);
-        router.replace("/dashboard");
+        router.replace("/home");
       } catch (err: unknown) {
         setCodeError(true);
         setErrorMsg(err instanceof Error ? err.message : "验证码错误或已过期");
