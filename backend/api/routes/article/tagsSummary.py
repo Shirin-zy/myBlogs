@@ -28,6 +28,9 @@ def set_cached_tag_stats(data):
 
 @router.get("/tagSummary")
 async def tag_summary(db: Session = Depends(get_db)):
+    """
+   文章的标签统计
+    """
     cached = get_cached_tag_stats()
     if cached is not None:
         return {"code": 200, "message": "获取标签统计成功", "data": cached}

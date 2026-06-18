@@ -9,6 +9,9 @@ router = APIRouter(prefix="/llmApi", tags=["llm"])
 
 @router.post("/chat")
 async def chat(request_data: ChatRequest):
+    """
+    大模型对话接口
+    """
     messages = [msg.dict() for msg in request_data.messages]
 
     def generate():

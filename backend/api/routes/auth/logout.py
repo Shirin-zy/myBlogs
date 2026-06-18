@@ -5,6 +5,9 @@ router = APIRouter(tags=["auth"])
 
 @router.post("/logout")
 async def logout(response: Response, user=Depends(jwt_auth_dependency)):
+    """
+    登出
+    """
     response.delete_cookie("blog-session")
     return {
         "code": 200,

@@ -16,6 +16,9 @@ ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
 
 @router.post("/image")
 async def upload_image(file: UploadFile = File(...)):
+    """
+    上传图片接口
+    """
     # 1. 获取并检查文件后缀
     filename = file.filename
     extension = os.path.splitext(filename)[1].lower()

@@ -20,8 +20,9 @@ backend/
     │   │   ├── auth/           # 认证模块
     │   │   ├── base/           # 基础模块
     │   │   │   ├── __init__.py
-    │   │   │   ├── health.py
-    │   │   │   ├── upload.py
+    │   │   │   ├── health.py       # 健康检查接口
+    │   │   │   ├── upload.py       # 上传图片接口 
+    │   │   │   ├── test_get.py     # 测试 GET 方法接口
     │   │   │   ├── toolset.py      # 工具集接口
     │   │   │   └── overview.py     # 网站概览接口
     │   │   ├── llm/            # AI 模块
