@@ -1,79 +1,90 @@
-"use client"
+"use client";
 
-import { useMemo } from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { useState, useEffect, useCallback } from "react"
-import { PenSquare, Menu, X, User } from "lucide-react"
-import { useAppStore } from "@/hooks/store/app-store"
-import { cn } from "@/lib/utils"
-import { debounce } from "@/lib/utils"
-import FloatButton from "@/components/home/floatButton"
-import AIChatCard from "@/components/home/aiChatCard"
-import Footer from "@/components/home/footer"
-import styles from "./layout.module.less"
+import { useMemo } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { useState, useEffect, useCallback } from "react";
+import { PenSquare, Menu, X, User } from "lucide-react";
+import { useAppStore } from "@/hooks/store/app-store";
+import { cn } from "@/lib/utils";
+import { debounce } from "@/lib/utils";
+import FloatButton from "@/components/home/floatButton";
+import AIChatCard from "@/components/home/aiChatCard";
+import Footer from "@/components/home/footer";
+import styles from "./layout.module.less";
 
 const baseLinks = [
   { route: "/", label: "首页", key: "home" },
   { route: "/archive", label: "归档", key: "archive" },
   { route: "/toolset", label: "资源库", key: "toolset" },
-]
+];
 
 /**
  * (content) 路由组公共布局
  * 适用于非首页的内容页面，如文章详情、标签页等。
  * 移除了 (home) 布局中的整屏滚动逻辑。
  */
-export default function ContentGroupLayout({ children }: { children: React.ReactNode }) {
-  const user = useAppStore((state) => state.user)
-  const isLogin = useAppStore((state) => state.isLogin)
-  const { role } = user || {}
-  const pathname = usePathname()
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)
-  const [showBackTop, setShowBackTop] = useState(false)
-  const [visible, setVisible] = useState(false)
+export default function ContentGroupLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const router = useRouter();
+  const user = useAppStore((state) => state.user);
+  const isLogin = useAppStore((state) => state.isLogin);
+  const { role } = user || {};
+  const pathname = usePathname();
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [showBackTop, setShowBackTop] = useState(false);
+  const [visible, setVisible] = useState(false);
 
   const navLinks = useMemo(() => {
-    const links = [...baseLinks]
-    if (isLogin && role === 'admin') {
-      links.push({ route: "/dashboard", label: "管理后台", key: "back" })
+    const links = [...baseLinks];
+    if (isLogin && role === "admin") {
+      links.push({ route: "/dashboard", label: "管理后台", key: "back" });
     }
     if (!isLogin) {
-      links.push({ route: "/login", label: "登录", key: "login" })
+      links.push({ route: "/login", label: "登录", key: "login" });
     }
-    return links
-  }, [role, isLogin])
+    return links;
+  }, [role, isLogin]);
 
   // ── 滚动监听 ──────────────────────────────────────────────
   const handleScroll = useCallback(() => {
-    const scrollTop = window.scrollY
+    const scrollTop = window.scrollY;
     // 在内容页中，导航栏通常默认显示或更早进入滚动状态
-    setIsScrolled(scrollTop > 50)
-    setShowBackTop(scrollTop > 300)
-  }, [])
+    setIsScrolled(scrollTop > 50);
+    setShowBackTop(scrollTop > 300);
+  }, []);
 
   useEffect(() => {
-    const debouncedScroll = debounce(handleScroll, 16)
-    window.addEventListener("scroll", debouncedScroll, { passive: true })
+    const debouncedScroll = debounce(handleScroll, 16);
+    window.addEventListener("scroll", debouncedScroll, { passive: true });
     // 初始化执行一次
-    handleScroll()
-    return () => window.removeEventListener("scroll", debouncedScroll)
-  }, [handleScroll])
+    handleScroll();
+    return () => window.removeEventListener("scroll", debouncedScroll);
+  }, [handleScroll]);
 
   const openBiliBili = () => {
-    window.open("https://space.bilibili.com/39473070", "_blank")
-  }
+    window.open("https://space.bilibili.com/39473070", "_blank");
+  };
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" })
-  }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <div className={cn(styles.homeRoot, styles.layout)}>
       {/* ── 导航栏 ── */}
       {/* 内容页导航栏通常直接显示 scrolled 状态，或者至少不是完全隐藏 */}
-      <nav className={cn(styles.navs, isScrolled ? styles.scrolled : styles.scrolled)}>
+      <nav
+        className={cn(
+          styles.navs,
+          isScrolled ? styles.scrolled : styles.scrolled,
+        )}
+      >
         <div className={styles.navContent}>
           {/* Logo */}
           <Link href="/" className={styles.logo}>
@@ -87,7 +98,13 @@ export default function ContentGroupLayout({ children }: { children: React.React
             <ul className={styles.navList}>
               {navLinks.map((item) => (
                 <li key={item.key}>
-                  <Link href={item.route} className={cn(styles.navLink, pathname === item.route && styles.navLinkActive)}>
+                  <Link
+                    href={item.route}
+                    className={cn(
+                      styles.navLink,
+                      pathname === item.route && styles.navLinkActive,
+                    )}
+                  >
                     {item.label}
                   </Link>
                 </li>
@@ -95,7 +112,11 @@ export default function ContentGroupLayout({ children }: { children: React.React
             </ul>
 
             {/* 头像 */}
-            <div className={styles.avatarContainer} suppressHydrationWarning>
+            <div
+              className={styles.avatarContainer}
+              onClick={() => router.push("/userInfo")}
+              suppressHydrationWarning
+            >
               {user ? (
                 <img
                   src={
@@ -116,7 +137,11 @@ export default function ContentGroupLayout({ children }: { children: React.React
               onClick={() => setMenuOpen((v) => !v)}
               aria-label="菜单"
             >
-              {menuOpen ? <X className={styles.iconBtnSvg} /> : <Menu className={styles.iconBtnSvg} />}
+              {menuOpen ? (
+                <X className={styles.iconBtnSvg} />
+              ) : (
+                <Menu className={styles.iconBtnSvg} />
+              )}
             </button>
           </div>
         </div>
@@ -129,7 +154,10 @@ export default function ContentGroupLayout({ children }: { children: React.React
                 key={item.key}
                 href={item.route}
                 onClick={() => setMenuOpen(false)}
-                className={cn(styles.mobileLink, pathname === item.route && styles.mobileLinkActive)}
+                className={cn(
+                  styles.mobileLink,
+                  pathname === item.route && styles.mobileLinkActive,
+                )}
               >
                 {item.label}
               </Link>
@@ -156,5 +184,5 @@ export default function ContentGroupLayout({ children }: { children: React.React
 
       <AIChatCard visible={visible} setVisible={setVisible} />
     </div>
-  )
+  );
 }

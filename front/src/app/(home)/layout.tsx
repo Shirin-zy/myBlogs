@@ -2,6 +2,7 @@
 
 import { useMemo } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation"
 import { useState, useEffect, useCallback, useRef } from "react"
 import { PenSquare, Menu, X, ArrowUp ,User} from "lucide-react"
@@ -32,6 +33,7 @@ var baseLinks = [
  * - 响应式移动端菜单
  */
 export default function HomeGroupLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter()
   const user = useAppStore((state) => state.user);
   const isLogin = useAppStore((state) => state.isLogin);
   const {role} = user || {}
@@ -162,7 +164,7 @@ export default function HomeGroupLayout({ children }: { children: React.ReactNod
               </ul>
 
               {/* 头像 */}
-            <div className={styles.avatarContainer} suppressHydrationWarning>
+            <div className={styles.avatarContainer} onClick={() => router.push("/userInfo")}  suppressHydrationWarning>
               {user ? (
                 <img
                   src={

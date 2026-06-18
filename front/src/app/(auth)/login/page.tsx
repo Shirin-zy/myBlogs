@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Eye } from "lucide-react";
 import AnimatedCharacters from "@/components/login/AnimatedCharacters";
 import { useAppStoreActions } from "@/hooks/store/app-store";
 import styles from "./login.module.less";
@@ -112,6 +113,10 @@ function App() {
     }
   };
 
+  const handleBrowse = () => {
+    router.push("/home");
+  };
+
   return (
     <div className={styles.loginPage}>
       {/* ── Left Panel ── */}
@@ -145,6 +150,16 @@ function App() {
 
       {/* ── Right Panel ── */}
       <div className={styles.rightPanel}>
+        {/* Browse Button */}
+        <button 
+          type="button" 
+          className={styles.browseBtn}
+          onClick={handleBrowse}
+        >
+          <Eye className={styles.browseIcon} />
+          <span>随便看看</span>
+        </button>
+        
         <div className={styles.formContainer}>
           {/* Sparkle Icon */}
           <div className={styles.sparkleIcon}>

@@ -275,11 +275,43 @@
   .flex-center();
   background: @color-bg-white;
   padding: 40px;
+  position: relative;
+  overflow: visible;
 }
 
 .formContainer {
   width: 100%;
   max-width: 400px;
+}
+
+.browseBtn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #888;
+  background: transparent;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.25s ease;
+  z-index: 10;
+
+  &:hover {
+    color: #5b21b6;
+    background: rgba(91, 33, 182, 0.08);
+    transform: translateY(-1px);
+  }
+}
+
+.browseIcon {
+  width: 16px;
+  height: 16px;
 }
 
 .sparkleIcon {
@@ -548,7 +580,6 @@
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  .transition();
   white-space: nowrap;
   margin-top: auto;
 
@@ -562,6 +593,11 @@
     color: #999;
     cursor: not-allowed;
   }
+}
+
+.inputWithButton {
+  display: flex;
+  gap: 12px;
 }
 
 // ── Responsive ───────────────────────────────────────────────
